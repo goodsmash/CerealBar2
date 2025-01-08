@@ -8,7 +8,15 @@ export default defineConfig({
     port: 5173,
     strictPort: true,
     headers: {
-      'Content-Security-Policy': "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:;"
+      'Content-Security-Policy': `
+        default-src 'self';
+        script-src 'self' 'unsafe-inline' 'unsafe-eval' https://maps.googleapis.com;
+        style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
+        img-src 'self' data: https://*.google.com https://*.googleapis.com https://*.gstatic.com;
+        frame-src 'self' https://*.google.com https://www.google.com/maps/;
+        connect-src 'self' https://*.googleapis.com;
+        font-src 'self' https://fonts.gstatic.com;
+      `.replace(/\s+/g, ' ').trim()
     }
   },
   plugins: [react()],
