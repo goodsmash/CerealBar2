@@ -43,142 +43,139 @@ export const EventBookingForm = ({ selectedDate, onSubmit }: EventBookingFormPro
       <div className="space-y-4">
         <div className="grid grid-cols-1 gap-4">
           <div className="space-y-2">
-            <Label htmlFor="name">Name</Label>
+            <Label htmlFor="name" className="text-foreground">Full Name</Label>
             <Input
               id="name"
               value={formData.name}
               onChange={(e) => handleChange('name', e.target.value)}
               placeholder="Your full name"
+              className="bg-background border-primary/20 focus:border-primary"
               required
             />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="email">Email</Label>
+            <Label htmlFor="email" className="text-foreground">Email</Label>
             <Input
               id="email"
               type="email"
               value={formData.email}
               onChange={(e) => handleChange('email', e.target.value)}
               placeholder="your.email@example.com"
+              className="bg-background border-primary/20 focus:border-primary"
               required
             />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="phone">Phone Number</Label>
+            <Label htmlFor="phone" className="text-foreground">Phone Number</Label>
             <Input
               id="phone"
               type="tel"
               value={formData.phone}
               onChange={(e) => handleChange('phone', e.target.value)}
               placeholder="(123) 456-7890"
+              className="bg-background border-primary/20 focus:border-primary"
               required
             />
           </div>
         </div>
 
         <div className="space-y-2">
-          <Label>Event Type</Label>
+          <Label className="text-foreground">Event Type</Label>
           <RadioGroup
             value={formData.eventType}
             onValueChange={(value) => handleChange('eventType', value)}
-            className="grid grid-cols-2 gap-2"
+            className="grid grid-cols-2 gap-4"
           >
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="birthday" id="birthday" />
-              <Label htmlFor="birthday">Birthday Party</Label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="corporate" id="corporate" />
-              <Label htmlFor="corporate">Corporate Event</Label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="wedding" id="wedding" />
-              <Label htmlFor="wedding">Wedding</Label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="other" id="other" />
-              <Label htmlFor="other">Other</Label>
-            </div>
+            {[
+              { value: 'birthday', label: 'Birthday Party 🎂' },
+              { value: 'corporate', label: 'Corporate Event 💼' },
+              { value: 'wedding', label: 'Wedding 💍' },
+              { value: 'other', label: 'Other Celebration 🎉' }
+            ].map(({ value, label }) => (
+              <div key={value} className="flex items-center space-x-2 bg-background/50 p-3 rounded-lg border border-primary/10">
+                <RadioGroupItem value={value} id={value} className="text-primary" />
+                <Label htmlFor={value} className="text-foreground cursor-pointer">{label}</Label>
+              </div>
+            ))}
           </RadioGroup>
         </div>
 
         <div className="space-y-2">
-          <Label>Location Preference</Label>
+          <Label className="text-foreground">Location Preference</Label>
           <RadioGroup
             value={formData.location}
             onValueChange={(value) => handleChange('location', value)}
-            className="grid grid-cols-2 gap-2"
+            className="grid grid-cols-2 gap-4"
           >
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="onsite" id="onsite" />
-              <Label htmlFor="onsite">On-site at Sweet Bar</Label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="offsite" id="offsite" />
-              <Label htmlFor="offsite">Off-site Location</Label>
-            </div>
+            {[
+              { value: 'onsite', label: 'At Our Location 🏠' },
+              { value: 'offsite', label: 'At Your Location 🚗' }
+            ].map(({ value, label }) => (
+              <div key={value} className="flex items-center space-x-2 bg-background/50 p-3 rounded-lg border border-primary/10">
+                <RadioGroupItem value={value} id={`location-${value}`} className="text-primary" />
+                <Label htmlFor={`location-${value}`} className="text-foreground cursor-pointer">{label}</Label>
+              </div>
+            ))}
           </RadioGroup>
         </div>
 
         <div className="grid grid-cols-2 gap-4">
           <div className="space-y-2">
-            <Label htmlFor="guestCount">Number of Guests</Label>
-            <Select
-              value={formData.guestCount}
-              onValueChange={(value) => handleChange('guestCount', value)}
-            >
-              <SelectTrigger>
+            <Label htmlFor="guestCount" className="text-foreground">Number of Guests</Label>
+            <Select value={formData.guestCount} onValueChange={(value) => handleChange('guestCount', value)}>
+              <SelectTrigger className="bg-background border-primary/20">
                 <SelectValue placeholder="Select guest count" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="1-10">1-10 guests</SelectItem>
-                <SelectItem value="11-25">11-25 guests</SelectItem>
-                <SelectItem value="26-50">26-50 guests</SelectItem>
-                <SelectItem value="51-100">51-100 guests</SelectItem>
-                <SelectItem value="100+">100+ guests</SelectItem>
+                {['10-20', '21-50', '51-100', '100+'].map((count) => (
+                  <SelectItem key={count} value={count}>{count} guests</SelectItem>
+                ))}
               </SelectContent>
             </Select>
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="preferredTime">Preferred Time</Label>
-            <Select
-              value={formData.preferredTime}
-              onValueChange={(value) => handleChange('preferredTime', value)}
-            >
-              <SelectTrigger>
+            <Label htmlFor="preferredTime" className="text-foreground">Preferred Time</Label>
+            <Select value={formData.preferredTime} onValueChange={(value) => handleChange('preferredTime', value)}>
+              <SelectTrigger className="bg-background border-primary/20">
                 <SelectValue placeholder="Select time" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="10:00">10:00 AM</SelectItem>
-                <SelectItem value="12:00">12:00 PM</SelectItem>
-                <SelectItem value="14:00">2:00 PM</SelectItem>
-                <SelectItem value="16:00">4:00 PM</SelectItem>
-                <SelectItem value="18:00">6:00 PM</SelectItem>
+                {[
+                  '10:00', '11:00', '12:00', '13:00', '14:00',
+                  '15:00', '16:00', '17:00', '18:00', '19:00'
+                ].map((time) => (
+                  <SelectItem key={time} value={time}>
+                    {time.split(':')[0] > '12' 
+                      ? `${parseInt(time.split(':')[0]) - 12}:00 PM`
+                      : `${time} ${time === '12:00' ? 'PM' : 'AM'}`}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
           </div>
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="specialRequests">Special Requests</Label>
+          <Label htmlFor="specialRequests" className="text-foreground">Special Requests</Label>
           <Textarea
             id="specialRequests"
             value={formData.specialRequests}
             onChange={(e) => handleChange('specialRequests', e.target.value)}
-            placeholder="Tell us about any special requirements or requests..."
-            className="min-h-[100px]"
+            placeholder="Tell us about any special requests or dietary requirements..."
+            className="bg-background border-primary/20 focus:border-primary min-h-[100px]"
           />
         </div>
       </div>
 
-      <div className="flex justify-end">
-        <Button type="submit" className="w-full">
-          Submit Booking Request
-        </Button>
-      </div>
+      <Button
+        type="submit"
+        className="w-full bg-primary hover:bg-primary/90 text-white font-semibold"
+      >
+        Submit Booking Request
+      </Button>
     </form>
   );
 };
