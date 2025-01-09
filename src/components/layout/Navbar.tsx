@@ -26,7 +26,7 @@ export const Navbar = () => {
               className="flex items-center gap-2 hover:opacity-90 transition-opacity"
             >
               <img 
-                src="/images/logo.svg" 
+                src="./images/logo.svg" 
                 alt="Sweet & Comfy Boston" 
                 className="h-12 w-12"
               />
