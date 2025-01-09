@@ -1,7 +1,7 @@
 import { MenuItem } from '@/types/menu';
 import { milkOptions, iceCreamOptions, whippedCreamOption } from './add-ons';
 
-const defaultImage = '/lovable-uploads/243c40d2-d14b-416e-8873-7604cdce8f88.png';
+const defaultImage = './lovable-uploads/243c40d2-d14b-416e-8873-7604cdce8f88.png';
 
 export const menuItems: MenuItem[] = [
   {
@@ -10,7 +10,7 @@ export const menuItems: MenuItem[] = [
     description: "Our seasonal favorite! Made with real pumpkin spice, vanilla ice cream, and topped with whipped cream and a golden cookie.",
     price: 16.00,
     category: "Shakes",
-    image: '/lovable-uploads/48cc2571-6467-4a2f-b999-ecd2b5a3e3e5.png',
+    image: './lovable-uploads/48cc2571-6467-4a2f-b999-ecd2b5a3e3e5.png',
     popular: true
   },
   {
@@ -19,7 +19,7 @@ export const menuItems: MenuItem[] = [
     description: "Experience autumn in a bowl with our Pumpkin Spice Supreme! Creamy pumpkin-spiced ice cream topped with cinnamon-dusted whipped cream and seasonal toppings.",
     price: 13.00,
     category: "Bowls",
-    image: '/lovable-uploads/4f0d8112-36cd-4880-baa4-784fe1f6ad63.png'
+    image: './lovable-uploads/4f0d8112-36cd-4880-baa4-784fe1f6ad63.png'
   },
   {
     id: "basic-milkshake",
@@ -27,7 +27,7 @@ export const menuItems: MenuItem[] = [
     description: "Classic milkshake with your choice of ice cream and cold milk",
     price: 12.00,
     category: "Shakes",
-    image: '/lovable-uploads/8a73202d-ae48-4f13-aca5-5bd0546080a6.png',
+    image: './lovable-uploads/8a73202d-ae48-4f13-aca5-5bd0546080a6.png',
     popular: true,
     allergens: ["milk"]
   },
@@ -37,7 +37,7 @@ export const menuItems: MenuItem[] = [
     description: "Create your dream shake with our Build Your Own Shake option! Choose up to 4 cereals, 2 ice creams, 2 cookies, and your favorite syrups for a custom-made treat that's totally you.",
     price: 15.00,
     category: "Shakes",
-    image: '/lovable-uploads/9cd29c97-6b4e-4450-9724-aa0008736c4e.png',
+    image: './lovable-uploads/9cd29c97-6b4e-4450-9724-aa0008736c4e.png',
     options: {
       milkOptions: {
         maxSelections: 1,
@@ -59,7 +59,7 @@ export const menuItems: MenuItem[] = [
     description: "Indulge in our Buttercup milkshake—creamy vanilla ice cream blended with Reese's Puffs, Cocoa Puffs, Nutter Butter cookies, Reese's Peanut Butter sauce, and cold milk. A rich, peanut buttery delight in every sip!",
     price: 14.00,
     category: "Shakes",
-    image: '/lovable-uploads/baa9dff7-6a6a-4016-ba18-4bdc39f68d3e.png'
+    image: './lovable-uploads/baa9dff7-6a6a-4016-ba18-4bdc39f68d3e.png'
   },
   {
     id: "cookies-cream-shake",
@@ -67,7 +67,7 @@ export const menuItems: MenuItem[] = [
     description: "Satisfy your cravings with our Cookies & Cream milkshake—Oreo ice cream blended with Oreo Cereal, Cookie Crisp, Frosted Flakes, Oreo cookies, chocolate syrup, and cold milk. A chocolatey, cookie-filled dream in every sip!",
     price: 14.00,
     category: "Shakes",
-    image: '/lovable-uploads/bb4cdb3d-b798-436d-b1a5-7b4cc6b53f9b.png'
+    image: './lovable-uploads/bb4cdb3d-b798-436d-b1a5-7b4cc6b53f9b.png'
   },
   {
     id: "fresh-prince-shake",
@@ -75,7 +75,7 @@ export const menuItems: MenuItem[] = [
     description: "Treat yourself like royalty with our Fresh Prince(SS) of Boston milkshake—vanilla ice cream blended with Frosted Flakes, Froot Loops, Lucky Charms, golden Oreo cookies, caramel syrup, and cold milk. A sweet, colorful delight fit for a king or queen in every sip!",
     price: 14.00,
     category: "Shakes",
-    image: '/lovable-uploads/d45ffff9-e94b-4cb8-842c-10bc11b0e47e.png'
+    image: './lovable-uploads/d45ffff9-e94b-4cb8-842c-10bc11b0e47e.png'
   },
   {
     id: "liquid-gold-shake",
@@ -83,7 +83,7 @@ export const menuItems: MenuItem[] = [
     description: "Indulge in our Liquid Gold milkshake—vanilla ice cream blended with Cap'n Crunch Peanut Butter, Lucky Charms, golden Oreos, cookie butter, banana syrup, and cold milk. A rich, creamy, and magical flavor explosion in every sip!",
     price: 14.00,
     category: "Shakes",
-    image: '/lovable-uploads/dc2eb79b-547b-4fe9-bcd8-7a97aef63f8a.png'
+    image: './lovable-uploads/dc2eb79b-547b-4fe9-bcd8-7a97aef63f8a.png'
   },
   {
     id: "mcfly-shake",
@@ -91,7 +91,7 @@ export const menuItems: MenuItem[] = [
     description: "Take a trip with our Mcflyyy milkshake—vanilla ice cream blended with Apple Jacks, Froot Loops, golden Oreos, and cold milk, topped with gummy bears for a fun, sweet finish. Every sip is a blast from the past!",
     price: 14.00,
     category: "Shakes",
-    image: '/lovable-uploads/e7f0f120-3958-43d6-a8f2-a201efe7c197.png'
+    image: './lovable-uploads/e7f0f120-3958-43d6-a8f2-a201efe7c197.png'
   },
   {
     id: "cookies-and-cream-bowl",
@@ -99,7 +99,7 @@ export const menuItems: MenuItem[] = [
     description: "Indulge in our Cookies & Cream Bowl—Oreo ice cream topped with Oreo Cereal, Cookie Crisp, Frosted Flakes, and an Oreo cookie, all drizzled with Reese's chocolate syrup and served with a side bottle of cold milk. A cookie lover's dream come true!",
     price: 12.00,
     category: "Bowls",
-    image: '/lovable-uploads/ea412657-13df-4bba-be9f-142d8f8b2fa4.png'
+    image: './lovable-uploads/ea412657-13df-4bba-be9f-142d8f8b2fa4.png'
   },
   {
     id: "bowl-of-ice-cream",

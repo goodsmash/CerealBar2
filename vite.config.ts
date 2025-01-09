@@ -5,6 +5,7 @@ import path from "path";
 // https://vitejs.dev/config/
 export default defineConfig({
   base: '/cerealbar3/',
+  publicDir: 'public',
   server: {
     port: 5173,
     strictPort: true,
@@ -16,7 +17,7 @@ export default defineConfig({
         img-src 'self' data: https://*.google.com https://*.googleapis.com https://*.gstatic.com;
         frame-src 'self' https://*.google.com https://www.google.com/maps/;
         connect-src 'self' https://*.googleapis.com;
-        font-src 'self' https://fonts.gstatic.com;
+        font-src 'self' data: https://fonts.gstatic.com;
       `.replace(/\s+/g, ' ').trim()
     }
   },
@@ -34,9 +35,20 @@ export default defineConfig({
         manualChunks: {
           'react-vendor': ['react', 'react-dom', 'react-router-dom'],
           'ui-vendor': ['@radix-ui/react-icons', '@radix-ui/react-slot', 'class-variance-authority', 'clsx', 'tailwind-merge'],
-        }
-      }
-    }
+        },
+        assetFileNames: (assetInfo) => {
+          if (assetInfo.name) {
+            const info = assetInfo.name.split('.');
+            const ext = info[info.length - 1];
+            if (/png|jpe?g|svg|gif|tiff|bmp|ico/i.test(ext)) {
+              return `assets/images/[name][extname]`;
+            }
+          }
+          return `assets/[name]-[hash][extname]`;
+        },
+      },
+    },
+    chunkSizeWarningLimit: 800,
   },
   plugins: [react()],
 });
