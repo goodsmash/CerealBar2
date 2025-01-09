@@ -6,370 +6,396 @@ import { Slider } from "@/components/ui/slider";
 import { Switch } from "@/components/ui/switch";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
-import { menuItems } from "@/data/menu";
-import { milkOptions, iceCreamOptions, whippedCreamOption } from "@/data/add-ons";
-import { CerealItem } from "@/types/cereal";
+import { Checkbox } from "@/components/ui/checkbox";
+import {
+  baseIceCreamFlavors,
+  milkOptions,
+  cereals,
+  toppings,
+  whippedCreamOptions,
+  sizeOptions,
+  dietaryPreferences,
+  flavorProfiles,
+} from "@/data/custom-order-data";
 
-interface Preference {
-  sweetness: number;
-  fruitiness: number;
-  chocolate: number;
-  nutty: number;
-  dietary: {
-    vegan: boolean;
-    glutenFree: boolean;
-    nutFree: boolean;
-  };
+interface OrderItem {
+  baseIceCream: string;
+  size: string;
+  milk: string;
+  cereals: string[];
+  toppings: string[];
+  whippedCream: string | null;
+  price: number;
+  specialInstructions: string;
 }
 
 interface CerealBuilderProps {
-  onAddToCart: (item: CerealItem) => void;
+  onAddToCart: (item: OrderItem) => void;
 }
 
 export const CerealBuilder = ({ onAddToCart }: CerealBuilderProps) => {
   const [step, setStep] = useState(1);
-  const [preferences, setPreferences] = useState<Preference>({
-    sweetness: 50,
-    fruitiness: 50,
-    chocolate: 50,
-    nutty: 50,
-    dietary: {
-      vegan: false,
-      glutenFree: false,
-      nutFree: false,
-    },
-  });
-  const [recommendations, setRecommendations] = useState<any[]>([]);
-  const [selectedBase, setSelectedBase] = useState("");
-  const [customizations, setCustomizations] = useState({
-    milk: milkOptions[0].id,
-    iceCream: [],
-    whippedCream: false,
+  const [order, setOrder] = useState<OrderItem>({
+    baseIceCream: "",
+    size: "medium",
+    milk: "whole",
+    cereals: [],
     toppings: [],
+    whippedCream: null,
+    price: 0,
+    specialInstructions: "",
+  });
+  const [dietary, setDietary] = useState({
+    vegan: false,
+    glutenFree: false,
+    nutFree: false,
+    dairyFree: false,
   });
 
-  // Generate recommendations based on preferences
+  // Calculate total price whenever order changes
   useEffect(() => {
-    if (step === 2) {
-      const getScore = (item: any) => {
-        let score = 0;
-        
-        // Score based on description keywords
-        const desc = item.description.toLowerCase();
-        if (preferences.sweetness > 50 && desc.includes("sweet")) score += 2;
-        if (preferences.fruitiness > 50 && (desc.includes("fruit") || desc.includes("berry"))) score += 2;
-        if (preferences.chocolate > 50 && desc.includes("chocolate")) score += 2;
-        if (preferences.nutty > 50 && (desc.includes("nut") || desc.includes("peanut"))) score += 2;
-
-        // Dietary restrictions
-        if (preferences.dietary.vegan && !desc.includes("vegan")) score -= 10;
-        if (preferences.dietary.glutenFree && !desc.includes("gluten-free")) score -= 10;
-        if (preferences.dietary.nutFree && (desc.includes("nut") || desc.includes("peanut"))) score -= 10;
-
-        return score;
-      };
-
-      const scored = menuItems
-        .filter(item => item.category === "Shakes" || item.category === "Bowls")
-        .map(item => ({
-          ...item,
-          score: getScore(item),
-        }))
-        .sort((a, b) => b.score - a.score)
-        .slice(0, 3);
-
-      setRecommendations(scored);
+    let total = 0;
+    
+    // Base ice cream
+    const baseIceCream = baseIceCreamFlavors.find(f => f.id === order.baseIceCream);
+    if (baseIceCream) total += baseIceCream.price;
+    
+    // Size multiplier
+    const size = sizeOptions.find(s => s.id === order.size);
+    if (size) {
+      total *= size.multiplier;
+      total += size.price;
     }
-  }, [step, preferences]);
+    
+    // Milk option
+    const milk = milkOptions.find(m => m.id === order.milk);
+    if (milk) total += milk.price;
+    
+    // Cereals
+    order.cereals.forEach(cerealId => {
+      const cereal = cereals.find(c => c.id === cerealId);
+      if (cereal) total += cereal.price;
+    });
+    
+    // Toppings
+    order.toppings.forEach(toppingId => {
+      const topping = toppings.flatMap(cat => cat.items).find(t => t.id === toppingId);
+      if (topping) total += topping.price;
+    });
+    
+    // Whipped cream
+    if (order.whippedCream) {
+      const cream = whippedCreamOptions.find(w => w.id === order.whippedCream);
+      if (cream) total += cream.price;
+    }
+    
+    setOrder(prev => ({ ...prev, price: parseFloat(total.toFixed(2)) }));
+  }, [order.baseIceCream, order.size, order.milk, order.cereals, order.toppings, order.whippedCream]);
 
-  const renderStep1 = () => (
-    <div className="space-y-8">
-      <div className="space-y-4">
-        <h3 className="text-2xl font-semibold">Tell us your preferences</h3>
-        
-        <div className="space-y-6">
-          <div className="space-y-2">
-            <Label>Sweetness Level</Label>
-            <Slider
-              value={[preferences.sweetness]}
-              onValueChange={([value]) => setPreferences(prev => ({ ...prev, sweetness: value }))}
-              max={100}
-              step={1}
-            />
-          </div>
-
-          <div className="space-y-2">
-            <Label>Fruitiness Level</Label>
-            <Slider
-              value={[preferences.fruitiness]}
-              onValueChange={([value]) => setPreferences(prev => ({ ...prev, fruitiness: value }))}
-              max={100}
-              step={1}
-            />
-          </div>
-
-          <div className="space-y-2">
-            <Label>Chocolate Level</Label>
-            <Slider
-              value={[preferences.chocolate]}
-              onValueChange={([value]) => setPreferences(prev => ({ ...prev, chocolate: value }))}
-              max={100}
-              step={1}
-            />
-          </div>
-
-          <div className="space-y-2">
-            <Label>Nutty Level</Label>
-            <Slider
-              value={[preferences.nutty]}
-              onValueChange={([value]) => setPreferences(prev => ({ ...prev, nutty: value }))}
-              max={100}
-              step={1}
-            />
-          </div>
-        </div>
-
-        <div className="space-y-4 pt-4">
-          <h4 className="font-medium">Dietary Preferences</h4>
-          <div className="space-y-2">
-            <div className="flex items-center space-x-2">
-              <Switch
-                checked={preferences.dietary.vegan}
-                onCheckedChange={(checked) =>
-                  setPreferences(prev => ({
-                    ...prev,
-                    dietary: { ...prev.dietary, vegan: checked }
-                  }))
-                }
-              />
-              <Label>Vegan</Label>
+  const renderStep = () => {
+    switch (step) {
+      case 1:
+        return (
+          <motion.div
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -20 }}
+            className="space-y-6"
+          >
+            <h2 className="text-2xl font-bold text-primary">Choose Your Base</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {baseIceCreamFlavors
+                .filter(flavor => 
+                  (!dietary.vegan || flavor.dietary.vegan) &&
+                  (!dietary.dairyFree || flavor.dietary.vegan)
+                )
+                .map(flavor => (
+                  <Card
+                    key={flavor.id}
+                    className={`p-4 cursor-pointer transition-all ${
+                      order.baseIceCream === flavor.id
+                        ? "border-primary border-2"
+                        : "hover:border-primary/50"
+                    }`}
+                    onClick={() => setOrder({ ...order, baseIceCream: flavor.id })}
+                  >
+                    <h3 className="font-semibold">{flavor.name}</h3>
+                    <p className="text-sm text-muted-foreground">{flavor.description}</p>
+                    <p className="text-sm text-primary mt-2">${flavor.price.toFixed(2)}</p>
+                  </Card>
+                ))}
             </div>
+          </motion.div>
+        );
 
-            <div className="flex items-center space-x-2">
-              <Switch
-                checked={preferences.dietary.glutenFree}
-                onCheckedChange={(checked) =>
-                  setPreferences(prev => ({
-                    ...prev,
-                    dietary: { ...prev.dietary, glutenFree: checked }
-                  }))
-                }
-              />
-              <Label>Gluten Free</Label>
-            </div>
-
-            <div className="flex items-center space-x-2">
-              <Switch
-                checked={preferences.dietary.nutFree}
-                onCheckedChange={(checked) =>
-                  setPreferences(prev => ({
-                    ...prev,
-                    dietary: { ...prev.dietary, nutFree: checked }
-                  }))
-                }
-              />
-              <Label>Nut Free</Label>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <Button
-        className="w-full"
-        onClick={() => setStep(2)}
-      >
-        Get Recommendations
-      </Button>
-    </div>
-  );
-
-  const renderStep2 = () => (
-    <div className="space-y-8">
-      <div>
-        <h3 className="text-2xl font-semibold mb-4">Recommended for You</h3>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {recommendations.map((item) => (
-            <Card
-              key={item.id}
-              className={`p-4 cursor-pointer transition-all ${
-                selectedBase === item.id ? "ring-2 ring-primary" : ""
-              }`}
-              onClick={() => setSelectedBase(item.id)}
-            >
-              <div className="aspect-square relative mb-2">
-                <img
-                  src={item.image}
-                  alt={item.name}
-                  className="object-cover rounded-md"
-                />
-              </div>
-              <h4 className="font-semibold">{item.name}</h4>
-              <p className="text-sm text-muted-foreground">{item.description}</p>
-              <p className="mt-2 font-medium">${item.price.toFixed(2)}</p>
-            </Card>
-          ))}
-        </div>
-      </div>
-
-      <div className="flex justify-between">
-        <Button
-          variant="outline"
-          onClick={() => setStep(1)}
-        >
-          Back
-        </Button>
-        <Button
-          disabled={!selectedBase}
-          onClick={() => setStep(3)}
-        >
-          Customize
-        </Button>
-      </div>
-    </div>
-  );
-
-  const renderStep3 = () => (
-    <div className="space-y-8">
-      <div>
-        <h3 className="text-2xl font-semibold mb-4">Customize Your Order</h3>
-        
-        <div className="space-y-6">
-          <div className="space-y-2">
-            <Label>Choose your milk</Label>
-            <RadioGroup
-              value={customizations.milk}
-              onValueChange={(value) =>
-                setCustomizations(prev => ({ ...prev, milk: value }))
-              }
-            >
-              <div className="grid grid-cols-2 gap-2">
-                {milkOptions.map((milk) => (
-                  <div key={milk.id} className="flex items-center space-x-2">
-                    <RadioGroupItem value={milk.id} id={milk.id} />
-                    <Label htmlFor={milk.id}>{milk.name}</Label>
+      case 2:
+        return (
+          <motion.div
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -20 }}
+            className="space-y-6"
+          >
+            <h2 className="text-2xl font-bold text-primary">Customize Your Order</h2>
+            
+            {/* Size Selection */}
+            <div className="space-y-4">
+              <h3 className="font-semibold">Size</h3>
+              <RadioGroup
+                value={order.size}
+                onValueChange={(value) => setOrder({ ...order, size: value })}
+                className="grid grid-cols-3 gap-4"
+              >
+                {sizeOptions.map(size => (
+                  <div key={size.id}>
+                    <RadioGroupItem
+                      value={size.id}
+                      id={`size-${size.id}`}
+                      className="peer sr-only"
+                    />
+                    <Label
+                      htmlFor={`size-${size.id}`}
+                      className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-transparent p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary"
+                    >
+                      {size.name}
+                      <span className="text-sm text-muted-foreground">
+                        {size.price > 0 ? `+$${size.price.toFixed(2)}` : "Base Price"}
+                      </span>
+                    </Label>
                   </div>
                 ))}
-              </div>
-            </RadioGroup>
-          </div>
-
-          <div className="space-y-2">
-            <Label>Ice Cream (Choose up to 2)</Label>
-            <div className="grid grid-cols-2 gap-2">
-              {iceCreamOptions.map((iceCream) => (
-                <div key={iceCream.id} className="flex items-center space-x-2">
-                  <input
-                    type="checkbox"
-                    id={iceCream.id}
-                    checked={customizations.iceCream.includes(iceCream.id)}
-                    onChange={(e) => {
-                      if (e.target.checked && customizations.iceCream.length < 2) {
-                        setCustomizations(prev => ({
-                          ...prev,
-                          iceCream: [...prev.iceCream, iceCream.id]
-                        }));
-                      } else if (!e.target.checked) {
-                        setCustomizations(prev => ({
-                          ...prev,
-                          iceCream: prev.iceCream.filter(id => id !== iceCream.id)
-                        }));
-                      }
-                    }}
-                  />
-                  <Label htmlFor={iceCream.id}>{iceCream.name}</Label>
-                </div>
-              ))}
+              </RadioGroup>
             </div>
-          </div>
 
-          <div className="flex items-center space-x-2">
-            <Switch
-              checked={customizations.whippedCream}
-              onCheckedChange={(checked) =>
-                setCustomizations(prev => ({ ...prev, whippedCream: checked }))
-              }
-            />
-            <Label>Add Whipped Cream (+${whippedCreamOption.price.toFixed(2)})</Label>
-          </div>
-        </div>
-      </div>
+            {/* Milk Selection */}
+            <div className="space-y-4">
+              <h3 className="font-semibold">Milk Options</h3>
+              <RadioGroup
+                value={order.milk}
+                onValueChange={(value) => setOrder({ ...order, milk: value })}
+                className="grid grid-cols-2 gap-4"
+              >
+                {milkOptions
+                  .filter(milk => 
+                    (!dietary.vegan || milk.dietary.vegan) &&
+                    (!dietary.dairyFree || milk.dietary.vegan)
+                  )
+                  .map(milk => (
+                    <div key={milk.id}>
+                      <RadioGroupItem
+                        value={milk.id}
+                        id={`milk-${milk.id}`}
+                        className="peer sr-only"
+                      />
+                      <Label
+                        htmlFor={`milk-${milk.id}`}
+                        className="flex items-center justify-between rounded-md border-2 border-muted bg-transparent p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary"
+                      >
+                        {milk.name}
+                        <span className="text-sm text-muted-foreground">
+                          {milk.price > 0 ? `+$${milk.price.toFixed(2)}` : "Included"}
+                        </span>
+                      </Label>
+                    </div>
+                  ))}
+              </RadioGroup>
+            </div>
+          </motion.div>
+        );
 
-      <div className="flex justify-between">
-        <Button
-          variant="outline"
-          onClick={() => setStep(2)}
-        >
-          Back
-        </Button>
-        <Button
-          onClick={() => {
-            const baseItem = menuItems.find(item => item.id === selectedBase);
-            if (baseItem) {
-              onAddToCart({
-                ...baseItem,
-                customizations: {
-                  milk: customizations.milk,
-                  iceCream: customizations.iceCream,
-                  whippedCream: customizations.whippedCream,
-                }
-              });
-            }
-          }}
-        >
-          Add to Cart
-        </Button>
-      </div>
-    </div>
-  );
+      case 3:
+        return (
+          <motion.div
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -20 }}
+            className="space-y-6"
+          >
+            <h2 className="text-2xl font-bold text-primary">Add Cereals</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {cereals
+                .filter(cereal => 
+                  (!dietary.glutenFree || cereal.dietary.glutenFree) &&
+                  (!dietary.vegan || cereal.dietary.vegan)
+                )
+                .map(cereal => (
+                  <Card
+                    key={cereal.id}
+                    className={`p-4 cursor-pointer transition-all ${
+                      order.cereals.includes(cereal.id)
+                        ? "border-primary border-2"
+                        : "hover:border-primary/50"
+                    }`}
+                    onClick={() => {
+                      const newCereals = order.cereals.includes(cereal.id)
+                        ? order.cereals.filter(id => id !== cereal.id)
+                        : [...order.cereals, cereal.id];
+                      setOrder({ ...order, cereals: newCereals });
+                    }}
+                  >
+                    <h3 className="font-semibold">{cereal.name}</h3>
+                    <p className="text-sm text-primary mt-2">+${cereal.price.toFixed(2)}</p>
+                  </Card>
+                ))}
+            </div>
+          </motion.div>
+        );
+
+      case 4:
+        return (
+          <motion.div
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -20 }}
+            className="space-y-6"
+          >
+            <h2 className="text-2xl font-bold text-primary">Choose Your Toppings</h2>
+            {toppings.map(category => (
+              <div key={category.category} className="space-y-4">
+                <h3 className="font-semibold">{category.category}</h3>
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                  {category.items
+                    .filter(item => 
+                      (!dietary.nutFree || !item.allergens?.includes("tree nuts")) &&
+                      (!dietary.dairyFree || !item.allergens?.includes("milk"))
+                    )
+                    .map(item => (
+                      <Card
+                        key={item.id}
+                        className={`p-4 cursor-pointer transition-all ${
+                          order.toppings.includes(item.id)
+                            ? "border-primary border-2"
+                            : "hover:border-primary/50"
+                        }`}
+                        onClick={() => {
+                          const newToppings = order.toppings.includes(item.id)
+                            ? order.toppings.filter(id => id !== item.id)
+                            : [...order.toppings, item.id];
+                          setOrder({ ...order, toppings: newToppings });
+                        }}
+                      >
+                        <h4 className="font-medium">{item.name}</h4>
+                        <p className="text-sm text-primary mt-2">+${item.price.toFixed(2)}</p>
+                      </Card>
+                    ))}
+                </div>
+              </div>
+            ))}
+          </motion.div>
+        );
+
+      case 5:
+        return (
+          <motion.div
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -20 }}
+            className="space-y-6"
+          >
+            <h2 className="text-2xl font-bold text-primary">Review Your Order</h2>
+            <Card className="p-6 space-y-4">
+              <div className="flex justify-between items-center">
+                <h3 className="font-semibold">Total Price</h3>
+                <span className="text-xl font-bold text-primary">
+                  ${order.price.toFixed(2)}
+                </span>
+              </div>
+              
+              <div className="space-y-2">
+                <p><span className="font-medium">Base:</span> {
+                  baseIceCreamFlavors.find(f => f.id === order.baseIceCream)?.name
+                }</p>
+                <p><span className="font-medium">Size:</span> {
+                  sizeOptions.find(s => s.id === order.size)?.name
+                }</p>
+                <p><span className="font-medium">Milk:</span> {
+                  milkOptions.find(m => m.id === order.milk)?.name
+                }</p>
+                {order.cereals.length > 0 && (
+                  <p><span className="font-medium">Cereals:</span> {
+                    order.cereals.map(id => cereals.find(c => c.id === id)?.name).join(", ")
+                  }</p>
+                )}
+                {order.toppings.length > 0 && (
+                  <p><span className="font-medium">Toppings:</span> {
+                    order.toppings
+                      .map(id => toppings
+                        .flatMap(cat => cat.items)
+                        .find(t => t.id === id)?.name
+                      )
+                      .join(", ")
+                  }</p>
+                )}
+              </div>
+
+              <div className="pt-4">
+                <Button
+                  className="w-full"
+                  onClick={() => onAddToCart(order)}
+                >
+                  Add to Cart - ${order.price.toFixed(2)}
+                </Button>
+              </div>
+            </Card>
+          </motion.div>
+        );
+    }
+  };
 
   return (
-    <div className="max-w-4xl mx-auto px-4 pb-16">
-      <div className="mb-8">
-        <div className="flex justify-between items-center">
-          {[1, 2, 3].map((number) => (
-            <div
-              key={number}
-              className={`flex items-center ${
-                number !== 3 ? "flex-1" : ""
-              }`}
-            >
-              <div
-                className={`w-8 h-8 rounded-full flex items-center justify-center ${
-                  step >= number
-                    ? "bg-primary text-white"
-                    : "bg-gray-200 text-gray-500"
-                }`}
-              >
-                {number}
-              </div>
-              {number !== 3 && (
-                <div
-                  className={`flex-1 h-1 mx-2 ${
-                    step > number ? "bg-primary" : "bg-gray-200"
-                  }`}
-                />
-              )}
+    <div className="space-y-8">
+      {/* Dietary Preferences */}
+      <Card className="p-4">
+        <h3 className="font-semibold mb-4">Dietary Preferences</h3>
+        <div className="flex flex-wrap gap-4">
+          {dietaryPreferences.map(pref => (
+            <div key={pref.id} className="flex items-center space-x-2">
+              <Switch
+                id={pref.id}
+                checked={dietary[pref.id as keyof typeof dietary]}
+                onCheckedChange={(checked) =>
+                  setDietary(prev => ({ ...prev, [pref.id]: checked }))
+                }
+              />
+              <Label htmlFor={pref.id}>{pref.name}</Label>
             </div>
           ))}
         </div>
-        <div className="flex justify-between mt-2">
-          <span className="text-sm">Preferences</span>
-          <span className="text-sm">Recommendations</span>
-          <span className="text-sm">Customize</span>
-        </div>
+      </Card>
+
+      {/* Progress Steps */}
+      <div className="flex justify-between mb-8">
+        {[1, 2, 3, 4, 5].map((s) => (
+          <Button
+            key={s}
+            variant={s === step ? "default" : "outline"}
+            size="sm"
+            onClick={() => setStep(s)}
+            disabled={s > step && !order.baseIceCream}
+          >
+            {s}
+          </Button>
+        ))}
       </div>
 
-      <motion.div
-        key={step}
-        initial={{ opacity: 0, x: 20 }}
-        animate={{ opacity: 1, x: 0 }}
-        exit={{ opacity: 0, x: -20 }}
-        transition={{ duration: 0.3 }}
-      >
-        {step === 1 && renderStep1()}
-        {step === 2 && renderStep2()}
-        {step === 3 && renderStep3()}
-      </motion.div>
+      {renderStep()}
+
+      {/* Navigation Buttons */}
+      <div className="flex justify-between pt-6">
+        <Button
+          variant="outline"
+          onClick={() => setStep(step - 1)}
+          disabled={step === 1}
+        >
+          Previous
+        </Button>
+        <Button
+          onClick={() => setStep(step + 1)}
+          disabled={step === 5 || (step === 1 && !order.baseIceCream)}
+        >
+          {step === 4 ? "Review Order" : "Next"}
+        </Button>
+      </div>
     </div>
   );
 };
