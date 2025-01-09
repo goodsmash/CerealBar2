@@ -2,97 +2,65 @@ const { default: flattenColorPalette } = require("tailwindcss/lib/util/flattenCo
 
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  content: ["./src/**/*.{ts,tsx}"],
   darkMode: "class",
+  content: [
+    './pages/**/*.{ts,tsx}',
+    './components/**/*.{ts,tsx}',
+    './app/**/*.{ts,tsx}',
+    './src/**/*.{ts,tsx}',
+  ],
   theme: {
+    container: {
+      center: true,
+      padding: "2rem",
+      screens: {
+        "2xl": "1400px",
+      },
+    },
     extend: {
-      animation: {
-        first: "moveVertical 30s ease infinite",
-        second: "moveInCircle 20s reverse infinite",
-        third: "moveInCircle 40s linear infinite",
-        fourth: "moveHorizontal 40s ease infinite",
-        fifth: "moveInCircle 20s ease infinite",
-        aurora: "aurora 60s linear infinite",
-      },
-      keyframes: {
-        moveHorizontal: {
-          "0%": {
-            transform: "translateX(-50%) translateY(-10%)",
-          },
-          "50%": {
-            transform: "translateX(50%) translateY(10%)",
-          },
-          "100%": {
-            transform: "translateX(-50%) translateY(-10%)",
-          },
-        },
-        moveInCircle: {
-          "0%": {
-            transform: "rotate(0deg)",
-          },
-          "50%": {
-            transform: "rotate(180deg)",
-          },
-          "100%": {
-            transform: "rotate(360deg)",
-          },
-        },
-        moveVertical: {
-          "0%": {
-            transform: "translateY(-50%)",
-          },
-          "50%": {
-            transform: "translateY(50%)",
-          },
-          "100%": {
-            transform: "translateY(-50%)",
-          },
-        },
-        aurora: {
-          from: {
-            backgroundPosition: "50% 50%, 50% 50%",
-          },
-          to: {
-            backgroundPosition: "350% 50%, 350% 50%",
-          },
-        },
-      },
       colors: {
+        border: "hsl(var(--border))",
+        input: "hsl(var(--input))",
+        ring: "hsl(var(--ring))",
+        background: "hsl(var(--background))",
+        foreground: "hsl(var(--foreground))",
+        // Brand Colors
+        "brand-pink": "#FF69B4",  // Sweet
+        "brand-blue": "#4B9CD3",  // Comfy
+        "brand-cream": "#F5F5DC", // Accent
         primary: {
-          DEFAULT: "#FF69B4", // Brand pink
-          light: "#FFB6C1",
-          dark: "#FF1493",
+          DEFAULT: "#FF69B4",     // Brand pink
+          light: "#FFB6C1",       // Light pink
+          dark: "#FF1493",        // Dark pink
+          foreground: "hsl(var(--primary-foreground))",
         },
         secondary: {
-          DEFAULT: "#4B9CD3", // Brand blue
-          light: "#87CEEB",
-          dark: "#4169E1",
+          DEFAULT: "#4B9CD3",     // Brand blue
+          light: "#87CEEB",       // Light blue
+          dark: "#4169E1",        // Dark blue
+          foreground: "hsl(var(--secondary-foreground))",
         },
         accent: {
-          DEFAULT: "#F5F5DC", // Brand cream
-          light: "#FFFFF0",
-          dark: "#EEE8AA",
+          DEFAULT: "#F5F5DC",     // Brand cream
+          light: "#FFFFF0",       // Light cream
+          dark: "#EEE8AA",        // Dark cream
+          foreground: "hsl(var(--accent-foreground))",
         },
-        background: "#1A1A1A", // Dark background
-        foreground: "#FFFFFF",
-        muted: {
-          DEFAULT: "#374151",
-          foreground: "#9CA3AF",
-        },
-        border: "#2D2D2D",
-        ring: "#2D2D2D",
-        input: "#2D2D2D",
         destructive: {
-          DEFAULT: "#FF69B4", // Brand pink
-          foreground: "#FFFFFF",
+          DEFAULT: "hsl(var(--destructive))",
+          foreground: "hsl(var(--destructive-foreground))",
+        },
+        muted: {
+          DEFAULT: "hsl(var(--muted))",
+          foreground: "hsl(var(--muted-foreground))",
         },
         popover: {
-          DEFAULT: "#1A1A1A", // Dark background
-          foreground: "#FFFFFF",
+          DEFAULT: "hsl(var(--popover))",
+          foreground: "hsl(var(--popover-foreground))",
         },
         card: {
-          DEFAULT: "#1A1A1A", // Dark background
-          foreground: "#FFFFFF",
+          DEFAULT: "hsl(var(--card))",
+          foreground: "hsl(var(--card-foreground))",
         },
       },
       borderRadius: {
@@ -100,10 +68,24 @@ module.exports = {
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
       },
+      keyframes: {
+        "accordion-down": {
+          from: { height: 0 },
+          to: { height: "var(--radix-accordion-content-height)" },
+        },
+        "accordion-up": {
+          from: { height: "var(--radix-accordion-content-height)" },
+          to: { height: 0 },
+        },
+      },
+      animation: {
+        "accordion-down": "accordion-down 0.2s ease-out",
+        "accordion-up": "accordion-up 0.2s ease-out",
+      },
     },
   },
-  plugins: [addVariablesForColors],
-};
+  plugins: [require("tailwindcss-animate")],
+}
 
 function addVariablesForColors({ addBase, theme }) {
   let allColors = flattenColorPalette(theme("colors"));

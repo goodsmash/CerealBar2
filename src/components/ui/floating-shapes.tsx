@@ -1,5 +1,6 @@
 import { memo } from "react";
 import { motion } from "framer-motion";
+import cn from "classnames";
 
 interface Shape {
   color: string;
@@ -9,19 +10,20 @@ interface Shape {
   left: string;
   top: string;
   rotate: boolean;
-  variant?: "swirl" | "scoop" | "double";
+  variant?: "swirl" | "scoop";
+  hideOnMobile?: boolean;
 }
 
 const shapes: Shape[] = [
-  // Ice cream cones with brand colors
-  { color: "#FF69B4", secondColor: "#FFB6C1", type: "icecream", size: "80px", left: "5%", top: "10%", rotate: true, variant: "swirl" },
-  { color: "#4B9CD3", secondColor: "#87CEEB", type: "icecream", size: "70px", left: "85%", top: "15%", rotate: true, variant: "scoop" },
-  { color: "#FF69B4", secondColor: "#FF1493", type: "icecream", size: "90px", left: "15%", top: "85%", rotate: true, variant: "double" },
-  { color: "#4B9CD3", secondColor: "#4169E1", type: "icecream", size: "75px", left: "90%", top: "90%", rotate: true, variant: "swirl" },
-  { color: "#FF69B4", secondColor: "#FFB6C1", type: "icecream", size: "65px", left: "25%", top: "40%", rotate: true, variant: "scoop" },
-  { color: "#4B9CD3", secondColor: "#87CEEB", type: "icecream", size: "85px", left: "55%", top: "30%", rotate: true, variant: "double" },
+  // Ice cream cones with brand colors - smaller and no doubles
+  { color: "#FF69B4", secondColor: "#FFB6C1", type: "icecream", size: "60px", left: "5%", top: "10%", rotate: true, variant: "swirl" },
+  { color: "#4B9CD3", secondColor: "#87CEEB", type: "icecream", size: "50px", left: "85%", top: "15%", rotate: true, variant: "scoop" },
+  { color: "#FF69B4", secondColor: "#FF1493", type: "icecream", size: "55px", left: "15%", top: "85%", rotate: true, variant: "scoop" },
+  { color: "#4B9CD3", secondColor: "#4169E1", type: "icecream", size: "45px", left: "90%", top: "90%", rotate: true, variant: "swirl" },
+  { color: "#FF69B4", secondColor: "#FFB6C1", type: "icecream", size: "40px", left: "25%", top: "40%", rotate: true, variant: "scoop", hideOnMobile: true },
+  { color: "#4B9CD3", secondColor: "#87CEEB", type: "icecream", size: "50px", left: "55%", top: "30%", rotate: true, variant: "swirl", hideOnMobile: true },
   
-  // Sprinkles with brand colors
+  // More sprinkles with brand colors
   { color: "#FF69B4", type: "sprinkle", size: "12px", left: "30%", top: "25%", rotate: true },
   { color: "#4B9CD3", type: "sprinkle", size: "14px", left: "70%", top: "45%", rotate: true },
   { color: "#F5F5DC", type: "sprinkle", size: "10px", left: "20%", top: "70%", rotate: true },
@@ -42,13 +44,24 @@ const shapes: Shape[] = [
   { color: "#87CEEB", type: "sprinkle", size: "11px", left: "55%", top: "65%", rotate: true },
   { color: "#4169E1", type: "sprinkle", size: "9px", left: "40%", top: "95%", rotate: true },
   { color: "#FF69B4", type: "sprinkle", size: "14px", left: "75%", top: "5%", rotate: true },
-  { color: "#4B9CD3", type: "sprinkle", size: "12px", left: "20%", top: "20%", rotate: true }
+  { color: "#4B9CD3", type: "sprinkle", size: "12px", left: "20%", top: "20%", rotate: true },
+  // Even more sprinkles!
+  { color: "#FF69B4", type: "sprinkle", size: "10px", left: "88%", top: "42%", rotate: true },
+  { color: "#4B9CD3", type: "sprinkle", size: "8px", left: "33%", top: "88%", rotate: true },
+  { color: "#F5F5DC", type: "sprinkle", size: "11px", left: "92%", top: "22%", rotate: true },
+  { color: "#FF1493", type: "sprinkle", size: "9px", left: "7%", top: "77%", rotate: true },
+  { color: "#87CEEB", type: "sprinkle", size: "13px", left: "48%", top: "18%", rotate: true },
+  { color: "#4169E1", type: "sprinkle", size: "10px", left: "82%", top: "58%", rotate: true },
+  { color: "#FFB6C1", type: "sprinkle", size: "12px", left: "17%", top: "92%", rotate: true },
+  { color: "#FF69B4", type: "sprinkle", size: "11px", left: "63%", top: "12%", rotate: true },
+  { color: "#4B9CD3", type: "sprinkle", size: "9px", left: "28%", top: "73%", rotate: true },
+  { color: "#F5F5DC", type: "sprinkle", size: "14px", left: "97%", top: "48%", rotate: true }
 ];
 
 interface IceCreamProps {
   color: string;
   size: string;
-  variant?: "swirl" | "scoop" | "double";
+  variant?: "swirl" | "scoop";
   secondColor?: string;
 }
 
@@ -96,52 +109,6 @@ const IceCreamCone = memo(({ color, size, variant = "scoop", secondColor = color
               }}
             />
           </motion.div>
-        );
-      case "double":
-        return (
-          <>
-            <motion.div
-              style={{
-                width: "90%",
-                height: "45%",
-                background: `linear-gradient(45deg, ${color} 0%, ${color}dd 100%)`,
-                borderRadius: "50% 50% 45% 45%",
-                position: "relative",
-                boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
-                zIndex: 2,
-              }}
-              animate={{
-                y: [0, -2, 0],
-              }}
-              transition={{
-                duration: 3,
-                repeat: Infinity,
-                ease: "easeInOut",
-              }}
-            />
-            <motion.div
-              style={{
-                width: "80%",
-                height: "45%",
-                background: `linear-gradient(45deg, ${secondColor} 0%, ${secondColor}dd 100%)`,
-                borderRadius: "50% 50% 45% 45%",
-                position: "absolute",
-                top: "25%",
-                left: "10%",
-                boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
-                zIndex: 1,
-              }}
-              animate={{
-                y: [0, -1, 0],
-              }}
-              transition={{
-                duration: 3,
-                delay: 0.2,
-                repeat: Infinity,
-                ease: "easeInOut",
-              }}
-            />
-          </>
         );
       default: // "scoop"
         return (
@@ -256,36 +223,42 @@ const Sprinkle = memo(({ color, size }: SprinkleProps) => (
 
 export const FloatingShapes = memo(() => {
   return (
-    <div className="fixed inset-0 pointer-events-none overflow-hidden" aria-hidden="true">
-      {shapes.map((shape, index) => {
-        const key = `shape-${index}-${shape.type}-${shape.color}`;
-        const Component = shape.type === "icecream" ? IceCreamCone : Sprinkle;
-        
-        return (
-          <motion.div
-            key={key}
-            style={{
-              position: "absolute",
-              left: shape.left,
-              top: shape.top,
-            }}
-            animate={{
-              y: ["0%", "5%", "0%"],
-              rotate: shape.rotate ? [0, 360] : 0,
-            }}
-            transition={{
-              duration: Math.random() * 3 + 2,
-              repeat: Infinity,
-              ease: "easeInOut",
-              rotate: {
-                duration: Math.random() * 20 + 10,
-              },
-            }}
-          >
-            <Component {...shape} />
-          </motion.div>
-        );
-      })}
+    <div className="fixed inset-0 overflow-hidden pointer-events-none">
+      {shapes.map((shape, index) => (
+        <motion.div
+          key={index}
+          className={cn(
+            "absolute",
+            shape.hideOnMobile && "hidden md:block"
+          )}
+          style={{
+            left: shape.left,
+            top: shape.top,
+            width: shape.size,
+            height: shape.size,
+          }}
+          animate={{
+            y: [0, 20, 0],
+            rotate: shape.rotate ? [0, 360] : 0,
+          }}
+          transition={{
+            duration: shape.type === "icecream" ? 20 : 10,
+            repeat: Infinity,
+            ease: "linear",
+          }}
+        >
+          {shape.type === "icecream" ? (
+            <IceCreamCone
+              color={shape.color}
+              size={shape.size}
+              variant={shape.variant}
+              secondColor={shape.secondColor}
+            />
+          ) : (
+            <Sprinkle color={shape.color} size={shape.size} />
+          )}
+        </motion.div>
+      ))}
     </div>
   );
 });

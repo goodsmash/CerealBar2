@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Menu } from "lucide-react";
+import { BrandGradientText } from "@/components/ui/brand-theme";
 
 export const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -17,22 +18,25 @@ export const Navbar = () => {
   ];
 
   return (
-    <nav className="fixed w-full z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b border-primary/10">
+    <nav className="fixed w-full z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b border-brand-pink/10">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
           <div className="flex-shrink-0 flex items-center">
             <Link 
               to="/" 
-              className="flex items-center gap-2 hover:opacity-90 transition-opacity"
+              className="flex items-center gap-2 hover:opacity-90 transition-opacity group"
             >
-              <img 
-                src="./images/logo.svg" 
-                alt="Sweet & Comfy Boston" 
-                className="h-12 w-12"
-              />
-              <span className="text-xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+              <div className="relative">
+                <img 
+                  src="./images/logo.svg" 
+                  alt="Sweet & Comfy Boston" 
+                  className="h-12 w-12 transition-transform duration-300 group-hover:scale-110"
+                />
+                <div className="absolute inset-0 bg-gradient-to-r from-brand-pink/20 to-brand-blue/20 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              </div>
+              <BrandGradientText className="text-xl font-bold">
                 Sweet & Comfy Boston
-              </span>
+              </BrandGradientText>
             </Link>
           </div>
 
@@ -50,29 +54,25 @@ export const Navbar = () => {
           </div>
 
           {/* Mobile Navigation */}
-          <div className="flex md:hidden">
-            <Sheet open={isOpen} onOpenChange={setIsOpen}>
+          <div className="flex items-center md:hidden">
+            <Sheet>
               <SheetTrigger asChild>
                 <Button 
-                  variant="outline" 
-                  size="icon"
-                  className="border-primary/20 text-primary hover:bg-primary/10"
+                  variant="ghost" 
+                  className="hover:bg-brand-pink/10"
                 >
                   <Menu className="h-6 w-6" />
                 </Button>
               </SheetTrigger>
-              <SheetContent className="bg-background/95 backdrop-blur-lg">
-                <div className="flex flex-col space-y-6 mt-6">
+              <SheetContent>
+                <div className="flex flex-col space-y-4 mt-8">
                   {navItems.map((item) => (
                     <Link
                       key={item.path}
                       to={item.path}
-                      className={`text-lg font-medium transition-colors hover:text-primary ${
-                        location.pathname === item.path
-                          ? "text-primary"
-                          : "text-secondary"
+                      className={`text-lg font-medium transition-colors hover:text-brand-pink ${
+                        location.pathname === item.path ? "text-brand-pink" : "text-secondary"
                       }`}
-                      onClick={() => setIsOpen(false)}
                     >
                       {item.label}
                     </Link>
@@ -99,14 +99,14 @@ const NavLink = ({
   return (
     <Link
       to={to}
-      className={`relative font-medium transition-colors hover:text-primary ${
-        active ? "text-primary" : "text-secondary"
+      className={`relative font-medium transition-colors hover:text-brand-pink ${
+        active ? "text-brand-pink" : "text-secondary"
       }`}
     >
       {children}
       {active && (
         <motion.div
-          className="absolute -bottom-[1.5px] left-0 right-0 h-[2px] bg-gradient-to-r from-primary to-secondary"
+          className="absolute -bottom-[1.5px] left-0 right-0 h-[2px] bg-gradient-to-r from-brand-pink to-brand-blue"
           layoutId="navbar-indicator"
           transition={{ type: "spring", bounce: 0.25 }}
         />
