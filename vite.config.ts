@@ -26,6 +26,9 @@ export default defineConfig({
       "@": path.resolve(__dirname, "./src"),
     },
   },
+  define: {
+    'process.env.PUBLIC_URL': '"/CerealBar2"',
+  },
   build: {
     outDir: 'dist',
     assetsDir: 'assets',
@@ -33,8 +36,8 @@ export default defineConfig({
     rollupOptions: {
       output: {
         manualChunks: {
-          'react-vendor': ['react', 'react-dom', 'react-router-dom'],
-          'ui-vendor': ['@radix-ui/react-icons', '@radix-ui/react-slot', 'class-variance-authority', 'clsx', 'tailwind-merge'],
+          vendor: ['react', 'react-dom', 'react-router-dom'],
+          ui: ['@radix-ui/react-icons', '@radix-ui/react-slot', '@radix-ui/react-switch'],
         },
         assetFileNames: (assetInfo) => {
           if (assetInfo.name) {
