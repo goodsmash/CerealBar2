@@ -13,13 +13,16 @@
     "type": "git",
     "url": "https://github.com/goodsmash/cerealbar3"
   },
+  "homepage": "https://goodsmash.github.io/cerealbar3",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "tsc && vite build",
     "preview": "vite preview",
     "clean": "rimraf dist",
     "lint": "eslint .",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d dist"
   },
   "dependencies": {
     "@emailjs/browser": "^4.4.1",
@@ -64,6 +67,7 @@
     "eslint": "^9.9.0",
     "eslint-plugin-react-hooks": "^5.1.0-rc.0",
     "eslint-plugin-react-refresh": "^0.4.9",
+    "gh-pages": "^4.0.0",
     "postcss": "^8.4.47",
     "rimraf": "^5.0.5",
     "tailwind-merge": "^2.6.0",
