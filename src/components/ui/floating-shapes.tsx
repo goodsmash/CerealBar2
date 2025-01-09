@@ -1,17 +1,17 @@
 import { motion } from "framer-motion";
 
 const shapes = [
-  // Ice cream cones with better positioning and larger sizes
-  { color: "#4ADE80", type: "icecream", size: "80px", left: "5%", top: "15%", rotate: true },
-  { color: "#FF1493", type: "icecream", size: "70px", left: "85%", top: "25%", rotate: true },
-  { color: "#4ADE80", type: "icecream", size: "90px", left: "15%", top: "75%", rotate: true },
-  { color: "#FF1493", type: "icecream", size: "75px", left: "90%", top: "80%", rotate: true },
+  // Ice cream cones with adjusted positioning to avoid overlap
+  { color: "#4ADE80", type: "icecream", size: "80px", left: "5%", top: "10%", rotate: true },
+  { color: "#FF1493", type: "icecream", size: "70px", left: "85%", top: "15%", rotate: true },
+  { color: "#4ADE80", type: "icecream", size: "90px", left: "15%", top: "85%", rotate: true },
+  { color: "#FF1493", type: "icecream", size: "75px", left: "90%", top: "90%", rotate: true },
   
-  // Decorative shapes
-  { color: "#FF4D4D", type: "circle", size: "12px", left: "25%", top: "20%", rotate: false },
-  { color: "#FF8B3D", type: "circle", size: "16px", left: "75%", top: "40%", rotate: false },
-  { color: "#FF1493", type: "circle", size: "14px", left: "45%", top: "60%", rotate: false },
-  { color: "#4ADE80", type: "circle", size: "18px", left: "35%", top: "85%", rotate: false },
+  // Decorative shapes with adjusted positioning
+  { color: "#FF4D4D", type: "circle", size: "12px", left: "25%", top: "30%", rotate: false },
+  { color: "#FF8B3D", type: "circle", size: "16px", left: "75%", top: "50%", rotate: false },
+  { color: "#FF1493", type: "circle", size: "14px", left: "45%", top: "70%", rotate: false },
+  { color: "#4ADE80", type: "circle", size: "18px", left: "35%", top: "95%", rotate: false },
 ];
 
 const IceCreamCone = ({ color, size }: { color: string; size: string }) => (
@@ -55,7 +55,7 @@ const IceCreamCone = ({ color, size }: { color: string; size: string }) => (
 
 export const FloatingShapes = () => {
   return (
-    <div className="fixed inset-0 pointer-events-none overflow-hidden">
+    <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
       {shapes.map((shape, index) => (
         <motion.div
           key={index}
@@ -67,9 +67,9 @@ export const FloatingShapes = () => {
             scale: 0.8,
           }}
           animate={{ 
-            x: [shape.left, `calc(${shape.left} + 40px)`, shape.left],
-            y: [shape.top, `calc(${shape.top} + 40px)`, shape.top],
-            opacity: [0.8, 1, 0.8],
+            x: [shape.left, `calc(${shape.left} + 30px)`, shape.left],
+            y: [shape.top, `calc(${shape.top} + 30px)`, shape.top],
+            opacity: [0.6, 0.8, 0.6],
             scale: [0.8, 1, 0.8],
             rotate: shape.rotate ? [0, 10, 0, -10, 0] : [0, 360],
           }}
@@ -93,7 +93,7 @@ export const FloatingShapes = () => {
                 height: shape.size,
                 background: `radial-gradient(circle at 30% 30%, ${shape.color}dd, ${shape.color})`,
                 borderRadius: "50%",
-                opacity: 0.6,
+                opacity: 0.4,
               }}
             />
           )}

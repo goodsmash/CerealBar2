@@ -15,19 +15,68 @@ const Events = () => {
   const [isBookingOpen, setIsBookingOpen] = useState(false);
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
 
+  // Get current date at midnight
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
   const handleDateSelect = (selectInfo: any) => {
-    setSelectedDate(selectInfo.start);
+    const selectedDate = new Date(selectInfo.start);
+    if (selectedDate < today) {
+      toast({
+        title: "Invalid Date",
+        description: "Please select a future date for your event.",
+        variant: "destructive"
+      });
+      return;
+    }
+    setSelectedDate(selectedDate);
     setIsBookingOpen(true);
   };
 
-  const handleBookingSubmit = (formData: any) => {
-    console.log('Booking submitted:', formData);
-    toast({
-      title: "Booking Request Sent!",
-      description: "We'll get back to you soon to confirm your event details.",
-    });
-    setIsBookingOpen(false);
+  const handleBookingSubmit = async (formData: any) => {
+    try {
+      // Here we'll add the API call to submit the booking
+      const response = await fetch('/api/bookings', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to submit booking');
+      }
+
+      toast({
+        title: "Booking Request Sent!",
+        description: "We'll get back to you within 24 hours to confirm your event details.",
+      });
+      setIsBookingOpen(false);
+    } catch (error) {
+      toast({
+        title: "Submission Error",
+        description: "There was an error submitting your booking. Please try again or contact us directly.",
+        variant: "destructive"
+      });
+    }
   };
+
+  // Sample events - replace with actual events from your backend
+  const events = [
+    {
+      title: 'Birthday Celebration',
+      start: '2025-01-15',
+      backgroundColor: 'var(--primary)',
+      borderColor: 'var(--primary)'
+    },
+    {
+      title: 'Corporate Ice Cream Social',
+      start: '2025-01-20',
+      backgroundColor: 'var(--secondary)',
+      borderColor: 'var(--secondary)'
+    }
+  ];
 
   return (
     <div className="min-h-screen bg-background">
@@ -50,10 +99,11 @@ const Events = () => {
             </p>
             <Button
               size="lg"
-              className="bg-primary hover:bg-primary/90 text-white font-semibold"
+              variant="default"
+              className="bg-gradient-to-r from-primary via-secondary to-primary hover:opacity-90 text-white font-semibold px-8 py-6 text-lg shadow-lg hover:shadow-xl transition-all duration-300 rounded-full"
               onClick={() => setIsBookingOpen(true)}
             >
-              Book Your Sweet Celebration
+              Book Your Sweet Celebration 🎉
             </Button>
           </div>
 
@@ -62,7 +112,7 @@ const Events = () => {
             <div className="calendar-wrapper">
               <style>{`
                 .fc {
-                  --fc-border-color: rgba(255, 255, 255, 0.1);
+                  --fc-border-color: rgba(var(--primary), 0.1);
                   --fc-button-bg-color: var(--primary);
                   --fc-button-border-color: var(--primary);
                   --fc-button-hover-bg-color: var(--primary-foreground);
@@ -72,6 +122,9 @@ const Events = () => {
                   --fc-today-bg-color: rgba(var(--primary), 0.1);
                   --fc-neutral-bg-color: var(--background);
                   --fc-page-bg-color: transparent;
+                  --fc-event-bg-color: var(--primary);
+                  --fc-event-border-color: var(--primary);
+                  --fc-event-text-color: #fff;
                 }
                 .fc-theme-standard td, .fc-theme-standard th {
                   border-color: var(--border);
@@ -81,6 +134,8 @@ const Events = () => {
                 }
                 .fc-button {
                   font-weight: 600 !important;
+                  padding: 0.75rem 1.5rem !important;
+                  border-radius: 9999px !important;
                 }
                 .fc-button-primary:not(:disabled):active,
                 .fc-button-primary:not(:disabled).fc-button-active {
@@ -90,10 +145,26 @@ const Events = () => {
                 .fc-daygrid-day-number,
                 .fc-col-header-cell-cushion {
                   color: var(--foreground);
+                  font-weight: 500;
+                  padding: 0.5rem;
+                }
+                .fc-day-past {
+                  opacity: 0.5;
+                  pointer-events: none;
                 }
                 .fc-event {
-                  background-color: var(--primary) !important;
-                  border-color: var(--primary) !important;
+                  padding: 0.25rem 0.5rem;
+                  border-radius: 6px;
+                  font-weight: 500;
+                }
+                .fc-day-future:hover {
+                  background: rgba(var(--primary), 0.05);
+                  cursor: pointer;
+                }
+                .fc-toolbar-title {
+                  font-size: 1.5rem !important;
+                  font-weight: 600 !important;
+                  color: var(--foreground);
                 }
               `}</style>
               <FullCalendar
@@ -102,25 +173,32 @@ const Events = () => {
                 selectable={true}
                 select={handleDateSelect}
                 headerToolbar={{
-                  left: 'prev,next today',
+                  left: 'prev,next',
                   center: 'title',
-                  right: 'dayGridMonth,timeGridWeek'
+                  right: 'today'
+                }}
+                validRange={{
+                  start: today
                 }}
                 height="auto"
-                events={[
-                  {
-                    title: 'Birthday Celebration',
-                    start: '2025-01-15',
-                    backgroundColor: 'var(--primary)',
-                    borderColor: 'var(--primary)'
-                  },
-                  {
-                    title: 'Corporate Ice Cream Social',
-                    start: '2025-01-20',
-                    backgroundColor: 'var(--secondary)',
-                    borderColor: 'var(--secondary)'
-                  }
-                ]}
+                events={events}
+                selectConstraint={{
+                  start: today.toISOString()
+                }}
+                selectOverlap={false}
+                businessHours={{
+                  daysOfWeek: [0, 1, 2, 3, 4, 5, 6],
+                  startTime: '10:00',
+                  endTime: '20:00',
+                }}
+                selectMirror={true}
+                dayMaxEvents={3}
+                eventDisplay="block"
+                eventTimeFormat={{
+                  hour: 'numeric',
+                  minute: '2-digit',
+                  meridiem: 'short'
+                }}
               />
             </div>
           </div>

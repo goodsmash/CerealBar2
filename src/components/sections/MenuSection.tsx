@@ -1,94 +1,92 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { MenuItem } from '@/data/types';
+import { MenuItem } from '@/types/menu';
+import { Button } from '@/components/ui/button';
 
 interface MenuSectionProps {
   items: MenuItem[];
 }
 
 export const MenuSection = ({ items }: MenuSectionProps) => {
-  const [selectedCategory, setSelectedCategory] = useState<string>('Shakes');
+  const [selectedCategory, setSelectedCategory] = useState<'Shakes' | 'Bowls' | 'Water'>('Shakes');
   
   const categories = [
     { id: 'Shakes', label: 'Shakes', icon: '🥤' },
     { id: 'Bowls', label: 'Bowls', icon: '🥣' },
-    { id: 'Add-Ons', label: 'Add-Ons', icon: '🍪' },
     { id: 'Water', label: 'Drinks', icon: '💧' },
   ];
 
   const filteredItems = items.filter(item => item.category === selectedCategory);
 
   return (
-    <section id="menu" className="py-16 bg-background">
-      <div className="max-w-7xl mx-auto px-4">
+    <section id="menu" className="min-h-screen bg-gradient-to-b from-background to-background/90 py-20">
+      <div className="container mx-auto px-4">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="text-center mb-12"
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+          className="text-center mb-16"
         >
-          <h2 className="text-3xl font-bold text-primary mb-4">Our Menu</h2>
-          <p className="text-secondary">Explore our delicious selection of treats</p>
+          <h2 className="text-4xl md:text-5xl font-bold mb-4 text-white">Our Menu</h2>
+          <p className="text-xl text-gray-300">Explore our delicious selection of treats</p>
         </motion.div>
 
-        <div className="flex justify-center mb-8 gap-4 overflow-x-auto pb-4">
+        <div className="flex flex-wrap justify-center gap-4 md:gap-8 mb-12">
           {categories.map((category) => (
-            <motion.button
+            <Button
               key={category.id}
-              onClick={() => setSelectedCategory(category.id)}
-              className={`px-6 py-3 rounded-full text-sm font-medium transition-colors whitespace-nowrap
-                ${selectedCategory === category.id
-                  ? 'bg-primary text-white'
-                  : 'bg-accent/10 text-secondary hover:bg-accent/20'
-                }`}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
+              onClick={() => setSelectedCategory(category.id as 'Shakes' | 'Bowls' | 'Water')}
+              variant={selectedCategory === category.id ? 'default' : 'outline'}
+              className={`px-6 py-3 text-lg font-semibold ${
+                selectedCategory === category.id
+                  ? 'bg-white text-black hover:bg-gray-100'
+                  : 'text-white border-white hover:bg-white hover:text-black'
+              }`}
             >
               <span className="mr-2">{category.icon}</span>
               {category.label}
-            </motion.button>
+            </Button>
           ))}
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {filteredItems.map((item, index) => (
+        <motion.div 
+          layout
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+        >
+          {filteredItems.map((item) => (
             <motion.div
               key={item.id}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: index * 0.1 }}
-              className="bg-background rounded-lg shadow-lg overflow-hidden"
+              layout
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="bg-black/40 backdrop-blur-sm rounded-xl p-6 border border-white/10 hover:border-white/20 transition-all"
             >
-              {item.image && (
-                <div className="relative h-48 overflow-hidden">
-                  <img
-                    src={item.image}
-                    alt={item.name}
-                    className="w-full h-full object-cover transform hover:scale-110 transition-transform duration-300"
-                  />
-                  {item.popular && (
-                    <div className="absolute top-4 right-4 bg-primary text-white px-3 py-1 rounded-full text-sm">
-                      Popular
-                    </div>
-                  )}
-                </div>
-              )}
-              <div className="p-6">
-                <h3 className="text-xl font-semibold text-primary mb-2">{item.name}</h3>
-                <p className="text-secondary text-sm mb-4 line-clamp-2">{item.description}</p>
-                <div className="flex justify-between items-center">
-                  <span className="text-primary font-bold">${item.price.toFixed(2)}</span>
-                  {item.allergens && item.allergens.length > 0 && (
-                    <div className="text-sm text-secondary">
-                      Contains: {item.allergens.join(', ')}
-                    </div>
-                  )}
-                </div>
+              <div className="aspect-video relative rounded-lg overflow-hidden mb-4 bg-black/20">
+                <img
+                  src={item.image}
+                  alt={item.name}
+                  className="w-full h-full object-cover"
+                />
+              </div>
+              <div className="flex items-start justify-between gap-2 mb-2">
+                <h3 className="text-xl font-bold text-white">{item.name}</h3>
+                {item.popular && (
+                  <span className="inline-flex items-center rounded-full bg-primary/10 px-2 py-1 text-xs font-medium text-primary">
+                    Popular
+                  </span>
+                )}
+              </div>
+              <p className="text-gray-300 mb-4 line-clamp-2">{item.description}</p>
+              <div className="flex justify-between items-center">
+                <span className="text-lg font-bold text-primary">${item.price.toFixed(2)}</span>
+                {item.allergens && (
+                  <span className="text-sm text-gray-400">Contains: {item.allergens.join(', ')}</span>
+                )}
               </div>
             </motion.div>
           ))}
-        </div>
+        </motion.div>
       </div>
     </section>
   );

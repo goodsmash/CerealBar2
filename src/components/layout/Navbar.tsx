@@ -23,9 +23,16 @@ export const Navbar = () => {
           <div className="flex-shrink-0 flex items-center">
             <Link 
               to="/" 
-              className="text-2xl font-bold text-primary hover:text-primary/90 transition-colors"
+              className="flex items-center gap-2 hover:opacity-90 transition-opacity"
             >
-              Sweet & Comfy Boston
+              <img 
+                src="/images/logo.svg" 
+                alt="Sweet & Comfy Boston" 
+                className="h-12 w-12"
+              />
+              <span className="text-xl font-bold text-primary">
+                Sweet & Comfy Boston
+              </span>
             </Link>
           </div>
 

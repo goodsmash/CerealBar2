@@ -29,11 +29,6 @@ export interface MenuItem {
       }>;
     };
   };
-  customizations?: {
-    milk: string;
-    iceCream: string[];
-    whippedCream: boolean;
-  };
 }
 
 export interface AddOn {
