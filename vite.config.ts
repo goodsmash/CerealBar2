@@ -4,7 +4,7 @@ import path from "path";
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  base: '/cerealbar3/',
+  base: '/CerealBar2/',
   publicDir: 'public',
   server: {
     port: 5173,

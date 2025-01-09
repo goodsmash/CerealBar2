@@ -11,9 +11,9 @@
   "license": "SEE LICENSE IN LICENSE",
   "repository": {
     "type": "git",
-    "url": "https://github.com/goodsmash/cerealbar3"
+    "url": "https://github.com/goodsmash/CerealBar2"
   },
-  "homepage": "https://goodsmash.github.io/cerealbar3",
+  "homepage": "https://goodsmash.github.io/CerealBar2",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
