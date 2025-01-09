@@ -17,7 +17,7 @@ export const Navbar = () => {
   ];
 
   return (
-    <nav className="fixed w-full z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <nav className="fixed w-full z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b border-primary/10">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
           <div className="flex-shrink-0 flex items-center">
@@ -30,7 +30,7 @@ export const Navbar = () => {
                 alt="Sweet & Comfy Boston" 
                 className="h-12 w-12"
               />
-              <span className="text-xl font-bold text-primary">
+              <span className="text-xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
                 Sweet & Comfy Boston
               </span>
             </Link>
@@ -50,30 +50,34 @@ export const Navbar = () => {
           </div>
 
           {/* Mobile Navigation */}
-          <div className="md:hidden flex items-center">
+          <div className="flex md:hidden">
             <Sheet open={isOpen} onOpenChange={setIsOpen}>
               <SheetTrigger asChild>
-                <Button variant="ghost" size="icon">
+                <Button 
+                  variant="outline" 
+                  size="icon"
+                  className="border-primary/20 text-primary hover:bg-primary/10"
+                >
                   <Menu className="h-6 w-6" />
                 </Button>
               </SheetTrigger>
-              <SheetContent side="right" className="w-[300px] sm:w-[400px]">
-                <nav className="flex flex-col gap-4 mt-8">
+              <SheetContent className="bg-background/95 backdrop-blur-lg">
+                <div className="flex flex-col space-y-6 mt-6">
                   {navItems.map((item) => (
                     <Link
                       key={item.path}
                       to={item.path}
-                      onClick={() => setIsOpen(false)}
-                      className={`text-lg font-medium px-2 py-1 rounded-md transition-colors ${
+                      className={`text-lg font-medium transition-colors hover:text-primary ${
                         location.pathname === item.path
-                          ? "bg-primary/10 text-primary"
-                          : "text-foreground/60 hover:text-primary hover:bg-primary/5"
+                          ? "text-primary"
+                          : "text-secondary"
                       }`}
+                      onClick={() => setIsOpen(false)}
                     >
                       {item.label}
                     </Link>
                   ))}
-                </nav>
+                </div>
               </SheetContent>
             </Sheet>
           </div>
@@ -91,18 +95,22 @@ const NavLink = ({
   to: string; 
   children: React.ReactNode;
   active: boolean;
-}) => (
-  <Link to={to}>
-    <motion.span
-      className={`inline-flex items-center px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-        active
-          ? "bg-primary/10 text-primary"
-          : "text-foreground/60 hover:text-primary hover:bg-primary/5"
+}) => {
+  return (
+    <Link
+      to={to}
+      className={`relative font-medium transition-colors hover:text-primary ${
+        active ? "text-primary" : "text-secondary"
       }`}
-      whileHover={{ scale: 1.05 }}
-      whileTap={{ scale: 0.95 }}
     >
       {children}
-    </motion.span>
-  </Link>
-);
+      {active && (
+        <motion.div
+          className="absolute -bottom-[1.5px] left-0 right-0 h-[2px] bg-gradient-to-r from-primary to-secondary"
+          layoutId="navbar-indicator"
+          transition={{ type: "spring", bounce: 0.25 }}
+        />
+      )}
+    </Link>
+  );
+};

@@ -2,6 +2,7 @@ import { motion } from 'framer-motion';
 import { MapPin, Phone, Clock, ExternalLink } from 'lucide-react';
 import { AuroraBackground } from '@/components/ui/aurora-background';
 import { InteractiveHoverButton } from '@/components/ui/interactive-hover-button';
+import { GoogleMap } from '@/components/ui/google-map';
 
 const location = {
   address: '6 Tremont St',
@@ -11,27 +12,11 @@ const location = {
 };
 
 export const LocationSection = () => {
-  const staticMapUrl = `https://maps.googleapis.com/maps/api/staticmap?` +
-    `center=${encodeURIComponent(`${location.address}, ${location.city}, ${location.state} ${location.zipCode}`)}` +
-    `&zoom=15` +
-    `&size=800x500` +
-    `&scale=2` +
-    `&markers=color:0xec4899%7C${encodeURIComponent(`${location.address}, ${location.city}, ${location.state} ${location.zipCode}`)}` +
-    `&key=${import.meta.env.VITE_GOOGLE_MAPS_API_KEY}` +
-    `&style=feature:all|element:labels.text.fill|color:0xffffff` +
-    `&style=feature:all|element:labels.text.stroke|color:0x000000` +
-    `&style=feature:water|element:geometry|color:0xec4899` +
-    `&style=feature:landscape|element:geometry|color:0xffd700` +
-    `&style=feature:road|element:geometry.fill|color:0xffffff` +
-    `&style=feature:road|element:geometry.stroke|color:0xec4899` +
-    `&style=feature:poi|element:geometry|color:0xffd700`;
-
-  const googleMapsUrl = `https://www.google.com/maps/place/${encodeURIComponent(
-    `${location.address}, ${location.city}, ${location.state} ${location.zipCode}`
-  )}`;
+  const fullAddress = `${location.address}, ${location.city}, ${location.state} ${location.zipCode}`;
+  const googleMapsUrl = `https://www.google.com/maps/place/${encodeURIComponent(fullAddress)}`;
 
   return (
-    <div className="bg-yellow-400 w-full">
+    <div className="bg-gradient-to-b from-yellow-300 to-yellow-400 w-full">
       <section className="py-16 w-full">
         <div className="max-w-7xl mx-auto px-4">
           <motion.div
@@ -104,13 +89,15 @@ export const LocationSection = () => {
               initial={{ opacity: 0, x: 20 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
-              className="h-[500px] rounded-xl overflow-hidden shadow-lg border-2 border-pink-500 relative group"
+              className="relative w-full h-[500px] rounded-xl overflow-hidden shadow-lg border-2 border-pink-500"
             >
-              <img
-                src={staticMapUrl}
-                alt="Map showing Sweet & Comfy Boston location"
-                className="w-full h-full object-cover"
-              />
+              <div className="absolute inset-0 w-full h-full">
+                <GoogleMap
+                  address={fullAddress}
+                  apiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY}
+                  className="w-full h-full rounded-xl"
+                />
+              </div>
               <div className="absolute inset-0 flex items-center justify-center bg-black/0 group-hover:bg-black/40 transition-all duration-300">
                 <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                   <InteractiveHoverButton

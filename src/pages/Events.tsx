@@ -9,6 +9,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { useToast } from '@/components/ui/use-toast';
 import { EventBookingForm } from '@/components/events/EventBookingForm';
 import { cn } from '@/lib/utils';
+import { BackgroundGradientAnimation } from '@/components/ui/background-gradient-animation';
 
 const Events = () => {
   const { toast } = useToast();
@@ -80,7 +81,19 @@ const Events = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="pt-24 pb-16">
+      <div className="fixed inset-0 z-0">
+        <BackgroundGradientAnimation
+          gradientBackgroundStart="rgb(147, 197, 253)" // Light blue
+          gradientBackgroundEnd="rgb(255, 182, 193)" // Light pink
+          firstColor="147, 197, 253" // Light blue
+          secondColor="255, 182, 193" // Light pink
+          thirdColor="224, 231, 255" // Lavender
+          fourthColor="255, 218, 185" // Peach
+          fifthColor="230, 244, 255" // Baby blue
+          className="absolute inset-0 !h-full opacity-70"
+        />
+      </div>
+      <div className="relative z-10 pt-24 pb-16">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}

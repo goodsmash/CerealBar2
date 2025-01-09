@@ -58,38 +58,41 @@ module.exports = {
         },
       },
       colors: {
-        border: "rgb(var(--border) / <alpha-value>)",
-        input: "rgb(var(--input) / <alpha-value>)",
-        ring: "rgb(var(--ring) / <alpha-value>)",
-        background: "rgb(var(--background) / <alpha-value>)",
-        foreground: "rgb(var(--foreground) / <alpha-value>)",
         primary: {
-          DEFAULT: "rgb(var(--primary) / <alpha-value>)",
-          foreground: "rgb(var(--primary-foreground) / <alpha-value>)",
+          DEFAULT: "#FF69B4", // Brand pink
+          light: "#FFB6C1",
+          dark: "#FF1493",
         },
         secondary: {
-          DEFAULT: "rgb(var(--secondary) / <alpha-value>)",
-          foreground: "rgb(var(--secondary-foreground) / <alpha-value>)",
-        },
-        destructive: {
-          DEFAULT: "rgb(var(--destructive) / <alpha-value>)",
-          foreground: "rgb(var(--destructive-foreground) / <alpha-value>)",
-        },
-        muted: {
-          DEFAULT: "rgb(var(--muted) / <alpha-value>)",
-          foreground: "rgb(var(--muted-foreground) / <alpha-value>)",
+          DEFAULT: "#4B9CD3", // Brand blue
+          light: "#87CEEB",
+          dark: "#4169E1",
         },
         accent: {
-          DEFAULT: "rgb(var(--accent) / <alpha-value>)",
-          foreground: "rgb(var(--accent-foreground) / <alpha-value>)",
+          DEFAULT: "#F5F5DC", // Brand cream
+          light: "#FFFFF0",
+          dark: "#EEE8AA",
+        },
+        background: "#1A1A1A", // Dark background
+        foreground: "#FFFFFF",
+        muted: {
+          DEFAULT: "#374151",
+          foreground: "#9CA3AF",
+        },
+        border: "#2D2D2D",
+        ring: "#2D2D2D",
+        input: "#2D2D2D",
+        destructive: {
+          DEFAULT: "#FF69B4", // Brand pink
+          foreground: "#FFFFFF",
         },
         popover: {
-          DEFAULT: "rgb(var(--popover) / <alpha-value>)",
-          foreground: "rgb(var(--popover-foreground) / <alpha-value>)",
+          DEFAULT: "#1A1A1A", // Dark background
+          foreground: "#FFFFFF",
         },
         card: {
-          DEFAULT: "rgb(var(--card) / <alpha-value>)",
-          foreground: "rgb(var(--card-foreground) / <alpha-value>)",
+          DEFAULT: "#1A1A1A", // Dark background
+          foreground: "#FFFFFF",
         },
       },
       borderRadius: {

@@ -3,16 +3,16 @@ import { cn } from "@/lib/utils";
 import { useEffect, useRef, useState } from "react";
 
 export const BackgroundGradient = ({
-  gradientBackgroundStart = "#FFD700", // Yellow
-  gradientBackgroundEnd = "#EC4899", // Pink
-  firstColor = "255, 215, 0", // Yellow
-  secondColor = "236, 72, 153", // Pink
-  thirdColor = "255, 182, 193", // Light Pink
-  fourthColor = "255, 223, 186", // Peach
-  fifthColor = "255, 240, 245", // Lavender Blush
-  pointerColor = "236, 72, 153", // Pink
+  gradientBackgroundStart = "#FF69B4", // Brand pink
+  gradientBackgroundEnd = "#4B9CD3", // Brand blue
+  firstColor = "255, 105, 180", // Brand pink in RGB
+  secondColor = "75, 156, 211", // Brand blue in RGB
+  thirdColor = "255, 182, 193", // Light pink in RGB
+  fourthColor = "135, 206, 235", // Light blue in RGB
+  fifthColor = "245, 245, 220", // Cream in RGB
+  pointerColor = "255, 105, 180", // Brand pink in RGB
   size = "80%",
-  blendingValue = "soft-light",
+  blendingValue = "hard-light",
   children,
   className,
   interactive = true,

@@ -2,7 +2,7 @@
 import { cn } from "@/lib/utils";
 import React, { ReactNode } from "react";
 
-interface AuroraBackgroundProps extends React.HTMLProps<HTMLDivElement> {
+interface AuroraBackgroundProps extends React.HTMLAttributes<HTMLDivElement> {
   children: ReactNode;
   showRadialGradient?: boolean;
 }
@@ -31,17 +31,28 @@ export const AuroraBackground = ({
             [background-size:300%,_200%]
             [background-position:50%_50%,50%_50%]
             filter blur-[10px]
-            after:content-[""] after:absolute after:inset-0 after:[background-image:var(--primary-gradient),var(--aurora)] 
+            after:content-[""] after:absolute after:inset-0 after:[background-image:var(--primary-gradient),var(--aurora)]
             after:[background-size:200%,_100%] 
-            after:animate-aurora after:[background-attachment:fixed] after:mix-blend-difference
-            pointer-events-none
-            absolute -inset-[10px] opacity-50 will-change-transform`,
+            after:[background-position:50%_50%,50%_50%]
+            after:animate-aurora
+            after:opacity-70
+            after:blur-[10px]
+            absolute -inset-[10px]
+            animate-aurora
+            [--pink-300:theme(colors.primary.light)]
+            [--pink-400:theme(colors.primary.DEFAULT)]
+            [--pink-500:theme(colors.primary.dark)]
+            [--blue-200:theme(colors.secondary.light)]
+            [--blue-300:theme(colors.secondary.DEFAULT)]
+            [--primary:theme(colors.primary.DEFAULT)]
+            [--transparent:transparent]
+            `,
             showRadialGradient &&
-              `[mask-image:radial-gradient(ellipse_at_100%_0%,black_10%,var(--transparent)_70%)]`
+              "after:bg-gradient-to-r after:from-transparent after:via-primary/10 after:to-transparent"
           )}
-        ></div>
+        />
       </div>
-      {children}
+      <div className="relative">{children}</div>
     </div>
   );
 };
