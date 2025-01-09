@@ -20,13 +20,14 @@ export default defineConfig({
       `.replace(/\s+/g, ' ').trim()
     }
   },
-  plugins: [react()],
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
     },
   },
   build: {
+    outDir: 'dist',
+    assetsDir: 'assets',
     sourcemap: true,
     rollupOptions: {
       output: {
@@ -36,5 +37,6 @@ export default defineConfig({
         }
       }
     }
-  }
+  },
+  plugins: [react()],
 });
