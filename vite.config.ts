@@ -44,6 +44,10 @@ export default defineConfig({
             const info = assetInfo.name.split('.');
             const ext = info[info.length - 1];
             if (/png|jpe?g|svg|gif|tiff|bmp|ico/i.test(ext)) {
+              // Keep favicons in the root
+              if (assetInfo.name.includes('favicon') || assetInfo.name.includes('apple-touch-icon')) {
+                return `[name][extname]`;
+              }
               return `assets/images/[name][extname]`;
             }
           }
