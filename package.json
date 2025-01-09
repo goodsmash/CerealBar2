@@ -3,6 +3,16 @@
   "private": true,
   "version": "1.0.0",
   "type": "module",
+  "author": {
+    "name": "Ryan McGinley",
+    "email": "ryan@01fast.com",
+    "url": "https://01fast.com"
+  },
+  "license": "SEE LICENSE IN LICENSE",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/goodsmash/cerealbar3"
+  },
   "scripts": {
     "dev": "vite",
     "build": "vite build",

@@ -1,4 +1,15 @@
-# Welcome to your Lovable project
+# Sweet & Comfy Boston
+
+A modern, delightful ice cream and treats experience in Boston. Designed and developed by [Ryan McGinley](https://01fast.com).
+
+## About
+
+Sweet & Comfy Boston is a premium ice cream and treats experience, bringing joy and delight to the heart of Boston. This project showcases modern web development practices, beautiful animations, and a carefully crafted user experience.
+
+### Created By
+Ryan McGinley  
+Portfolio: [01fast.com](https://01fast.com)  
+GitHub: [@goodsmash](https://github.com/goodsmash)
 
 ## Project info
 
@@ -50,6 +61,50 @@ npm run dev
 - Click on "New codespace" to launch a new Codespace environment.
 - Edit files directly within the Codespace and commit and push your changes once you're done.
 
+## Design System
+
+### Brand Colors
+
+Our color palette is designed to create a playful yet sophisticated look that matches our brand identity:
+
+**Primary Colors:**
+- Pink (`#FF69B4`): Main brand color, used for primary actions and emphasis
+  - Light: `#FFB6C1`
+  - Dark: `#FF1493`
+
+**Secondary Colors:**
+- Blue (`#4B9CD3`): Complementary color, used for secondary elements
+  - Light: `#87CEEB`
+  - Dark: `#4169E1`
+
+**Accent Colors:**
+- Cream (`#F5F5DC`): Used for subtle highlights and backgrounds
+  - Light: `#FFFFF0`
+  - Dark: `#EEE8AA`
+
+**Background:**
+- Dark (`#1A1A1A`): Main background color
+- Foreground: White (`#FFFFFF`)
+
+### Typography
+
+- Headings: Use gradient text with primary and secondary colors
+- Body: Clean, readable text in light colors for dark backgrounds
+
+### Components
+
+We use several custom components to maintain consistent branding:
+
+- `FloatingShapes`: Animated ice cream cones and sprinkles using brand colors
+- `BackgroundGradient`: Smooth transitions between brand colors
+- `AuroraBackground`: Subtle animated background effects
+
+### Animations
+
+- Smooth transitions with `framer-motion`
+- Floating animations for decorative elements
+- Gradient flows for background effects
+
 ## What technologies are used for this project?
 
 This project is built with .
@@ -67,3 +122,13 @@ Simply open [Lovable](https://lovable.dev/projects/b0f1ddb0-a815-49a4-897b-7f552
 ## I want to use a custom domain - is that possible?
 
 We don't support custom domains (yet). If you want to deploy your project under your own domain then we recommend using Netlify. Visit our docs for more details: [Custom domains](https://docs.lovable.dev/tips-tricks/custom-domain/)
+
+## License
+
+Copyright (c) 2025 Ryan McGinley. All Rights Reserved.
+
+This project and its contents are protected under copyright law. While the source code is available for viewing and educational purposes, any reproduction, distribution, or use of the code, design, or assets without explicit permission is prohibited.
+
+For licensing inquiries or business opportunities, please contact:
+- Portfolio: [01fast.com](https://01fast.com)
+- GitHub: [@goodsmash](https://github.com/goodsmash)
