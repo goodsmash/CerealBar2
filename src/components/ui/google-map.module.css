@@ -1,0 +1,61 @@
+/* Map container animations */
+.mapContainer {
+  @apply relative w-full h-full overflow-hidden rounded-xl;
+  transition: transform 0.3s ease-in-out;
+}
+
+.mapContainer:hover {
+  transform: scale(1.01);
+}
+
+/* Loading animation */
+.loadingSpinner {
+  @apply w-8 h-8 border-4 border-brand-pink border-t-transparent rounded-full;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* Error state */
+.errorContainer {
+  @apply flex items-center justify-center w-full h-full bg-pink-50/90 backdrop-blur-sm rounded-xl p-4;
+}
+
+.errorIcon {
+  @apply w-12 h-12 text-brand-pink;
+  animation: bounce 2s ease-in-out infinite;
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+/* Map controls */
+.mapControls {
+  @apply absolute bottom-4 right-4 flex flex-col gap-2;
+  z-index: 1;
+}
+
+.mapButton {
+  @apply p-2 bg-white rounded-lg shadow-lg hover:bg-gray-50 transition-colors;
+  border: 1px solid rgba(236, 72, 153, 0.2);
+}
+
+/* Responsive design */
+@media (max-width: 640px) {
+  .mapContainer {
+    @apply h-[300px];
+  }
+  
+  .mapControls {
+    @apply bottom-2 right-2 gap-1;
+  }
+  
+  .mapButton {
+    @apply p-1;
+  }
+}

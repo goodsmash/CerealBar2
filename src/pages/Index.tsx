@@ -12,6 +12,7 @@ import { useState, useEffect, useRef } from "react";
 import { menuItems } from "@/data/menu";
 import { ContactSection } from "@/components/sections/ContactSection";
 import { BrandContainer, BrandHeading } from "@/components/ui/brand-theme";
+import { EventBookingForm } from "@/components/events/EventBookingForm";
 
 const Index = () => {
   const [isVisible, setIsVisible] = useState(false);
@@ -34,14 +35,16 @@ const Index = () => {
     <div className="relative min-h-screen overflow-hidden">
       <div className="fixed inset-0 z-0">
         <BackgroundGradientAnimation
-          gradientBackgroundStart="#FF69B4" // Brand pink
-          gradientBackgroundEnd="#4B9CD3" // Brand blue
+          gradientBackgroundStart="rgba(255, 105, 180, 0.8)" // Brand pink with opacity
+          gradientBackgroundEnd="rgba(75, 156, 211, 0.8)" // Brand blue with opacity
           firstColor="255, 105, 180" // Brand pink
           secondColor="75, 156, 211" // Brand blue
           thirdColor="255, 182, 193" // Light pink
           fourthColor="135, 206, 235" // Light blue
           fifthColor="245, 245, 220" // Cream
-          className="absolute inset-0 !h-full opacity-90"
+          blendingValue="soft-light" // Changed from hard-light for softer blend
+          size="100%" // Full coverage
+          className="absolute inset-0 !h-full opacity-70" // Reduced opacity
         />
       </div>
       
@@ -49,56 +52,25 @@ const Index = () => {
         <AnimatePresence>
           {isVisible && (
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 0.5 }}
-              className="relative"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="space-y-32 pb-32"
             >
-              <HeroSection 
-                onMenuClick={scrollToMenu}
-                onContactClick={scrollToContact}
-              />
-
+              <HeroSection onMenuClick={scrollToMenu} onContactClick={scrollToContact} />
+              <NewsMarquee />
               <div ref={menuRef}>
-                <BrandContainer className="my-20 mx-4 sm:mx-8 lg:mx-auto max-w-7xl">
-                  <BrandHeading level={2} className="text-center mb-12">
-                    Our Menu
-                  </BrandHeading>
-                  <MenuSection items={menuItems} />
+                <MenuSection items={menuItems} />
+              </div>
+              <ReviewsSection />
+              <LocationSection />
+              <div ref={contactRef} className="pt-16">
+                <BrandContainer>
+                  <BrandHeading level={2} className="text-center mb-16">Book an Event</BrandHeading>
+                  <EventBookingForm />
                 </BrandContainer>
               </div>
-
-              <section className="relative py-20 bg-black/30 backdrop-blur-sm z-20">
-                <BrandContainer className="mx-4 sm:mx-8 lg:mx-auto max-w-7xl">
-                  <BrandHeading level={2} className="text-center mb-12">
-                    Our Location
-                  </BrandHeading>
-                  <LocationSection />
-                </BrandContainer>
-              </section>
-
-              <section className="relative py-20 z-20">
-                <BrandContainer className="mx-4 sm:mx-8 lg:mx-auto max-w-7xl">
-                  <BrandHeading level={2} className="text-center mb-12">
-                    What Our Customers Say
-                  </BrandHeading>
-                  <ReviewsSection />
-                </BrandContainer>
-              </section>
-
-              <div ref={contactRef} className="my-20">
-                <BrandContainer className="mx-4 sm:mx-8 lg:mx-auto max-w-7xl">
-                  <BrandHeading level={2} className="text-center mb-12">
-                    Contact Us
-                  </BrandHeading>
-                  <ContactSection />
-                </BrandContainer>
-              </div>
-
-              <div className="relative z-20">
-                <NewsMarquee />
-              </div>
+              <ContactSection />
             </motion.div>
           )}
         </AnimatePresence>

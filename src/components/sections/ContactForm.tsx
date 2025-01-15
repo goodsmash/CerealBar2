@@ -1,12 +1,9 @@
 import { useState } from 'react';
-import emailjs from '@emailjs/browser';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
-
-// EmailJS configuration
-emailjs.init("YOUR_PUBLIC_KEY"); // Replace with your EmailJS public key
+import { sendContactEmail, sendConfirmationEmail } from '@/lib/email-service';
 
 interface ContactFormData {
   name: string;
@@ -79,39 +76,38 @@ export const ContactForm = () => {
     setIsSubmitting(true);
     
     try {
-      const result = await emailjs.send(
-        "YOUR_SERVICE_ID", // Replace with your EmailJS service ID
-        "YOUR_TEMPLATE_ID", // Replace with your EmailJS template ID
-        {
-          to_email: "bostoncereal@gmail.com",
-          from_name: formData.name,
-          from_email: formData.email,
-          subject: formData.subject,
-          message: formData.message,
-        }
-      );
-
-      if (result.status === 200) {
-        toast({
-          title: "Success!",
-          description: "Your message has been sent successfully. We'll get back to you soon!",
-        });
-        
-        // Reset form
-        setFormData({
-          name: '',
-          email: '',
-          subject: '',
-          message: '',
-        });
+      // Send email to business
+      const contactResult = await sendContactEmail(formData);
+      if (!contactResult.success) {
+        throw new Error(contactResult.error);
       }
+
+      // Send confirmation email to customer
+      const confirmationResult = await sendConfirmationEmail(formData);
+      if (!confirmationResult.success) {
+        console.error('Failed to send confirmation email:', confirmationResult.error);
+        // Don't throw here, as the main contact email was sent successfully
+      }
+
+      toast({
+        title: "Success!",
+        description: "Your message has been sent successfully. We'll get back to you soon!",
+      });
+      
+      // Reset form
+      setFormData({
+        name: '',
+        email: '',
+        subject: '',
+        message: '',
+      });
     } catch (error) {
+      console.error('Failed to send message:', error);
       toast({
         title: "Error",
-        description: "Failed to send message. Please try again later.",
+        description: error instanceof Error ? error.message : "Failed to send message. Please try again.",
         variant: "destructive",
       });
-      console.error("Email error:", error);
     } finally {
       setIsSubmitting(false);
     }

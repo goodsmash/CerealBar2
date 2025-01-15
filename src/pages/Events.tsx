@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import FullCalendar from '@fullcalendar/react';
+import type { DateSelectArg, EventClickArg, EventInput, ViewContentArg } from '@fullcalendar/core';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
@@ -8,19 +9,25 @@ import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { useToast } from '@/components/ui/use-toast';
 import { EventBookingForm } from '@/components/events/EventBookingForm';
-import { cn } from '@/lib/utils';
 import { BackgroundGradientAnimation } from '@/components/ui/background-gradient-animation';
+import { BrandContainer, BrandHeading } from '@/components/ui/brand-theme';
+import { cn } from '@/lib/utils';
+
+interface CalendarEvent extends EventInput {
+  type: 'birthday' | 'corporate' | 'private';
+}
 
 const Events = () => {
   const { toast } = useToast();
   const [isBookingOpen, setIsBookingOpen] = useState(false);
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  const [selectedView, setSelectedView] = useState<'dayGridMonth' | 'timeGridWeek'>('dayGridMonth');
 
-  // Get current date at midnight
+  // Get current date at midnight for date validation
   const today = new Date();
   today.setHours(0, 0, 0, 0);
 
-  const handleDateSelect = (selectInfo: any) => {
+  const handleDateSelect = useCallback((selectInfo: DateSelectArg) => {
     const selectedDate = new Date(selectInfo.start);
     if (selectedDate < today) {
       toast({
@@ -32,248 +39,251 @@ const Events = () => {
     }
     setSelectedDate(selectedDate);
     setIsBookingOpen(true);
-  };
+  }, [today, toast]);
 
-  const handleBookingSubmit = async (formData: any) => {
-    try {
-      // Here we'll add the API call to submit the booking
-      const response = await fetch('/api/bookings', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
-      });
+  const handleEventClick = useCallback((clickInfo: EventClickArg) => {
+    toast({
+      title: "Event Details",
+      description: `${clickInfo.event.title} - ${clickInfo.event.start?.toLocaleTimeString()}`,
+    });
+  }, [toast]);
 
-      if (!response.ok) {
-        throw new Error('Failed to submit booking');
-      }
-
-      toast({
-        title: "Booking Request Sent!",
-        description: "We'll get back to you within 24 hours to confirm your event details.",
-      });
-      setIsBookingOpen(false);
-    } catch (error) {
-      toast({
-        title: "Submission Error",
-        description: "There was an error submitting your booking. Please try again or contact us directly.",
-        variant: "destructive"
-      });
-    }
-  };
+  const handleViewChange = useCallback((viewContent: ViewContentArg) => {
+    setSelectedView(viewContent.view.type as 'dayGridMonth' | 'timeGridWeek');
+  }, []);
 
   // Sample events - replace with actual events from your backend
-  const events = [
+  const events: CalendarEvent[] = [
     {
       title: 'Birthday Celebration',
       start: '2025-01-15',
-      backgroundColor: 'var(--primary)',
-      borderColor: 'var(--primary)'
+      end: '2025-01-15T04:00:00',
+      backgroundColor: 'rgb(244, 114, 182)',
+      borderColor: 'rgb(244, 114, 182)',
+      textColor: 'white',
+      type: 'birthday'
     },
     {
       title: 'Corporate Ice Cream Social',
-      start: '2025-01-20',
-      backgroundColor: 'var(--secondary)',
-      borderColor: 'var(--secondary)'
+      start: '2025-01-20T13:00:00',
+      end: '2025-01-20T16:00:00',
+      backgroundColor: 'rgb(96, 165, 250)',
+      borderColor: 'rgb(96, 165, 250)',
+      textColor: 'white',
+      type: 'corporate'
     }
   ];
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="fixed inset-0 z-0">
         <BackgroundGradientAnimation
-          gradientBackgroundStart="rgb(147, 197, 253)" // Light blue
-          gradientBackgroundEnd="rgb(255, 182, 193)" // Light pink
-          firstColor="147, 197, 253" // Light blue
-          secondColor="255, 182, 193" // Light pink
-          thirdColor="224, 231, 255" // Lavender
-          fourthColor="255, 218, 185" // Peach
-          fifthColor="230, 244, 255" // Baby blue
+          gradientBackgroundStart="rgb(147, 197, 253)"
+          gradientBackgroundEnd="rgb(255, 182, 193)"
+          firstColor="147, 197, 253"
+          secondColor="255, 182, 193"
+          thirdColor="224, 231, 255"
+          fourthColor="255, 218, 185"
+          fifthColor="230, 244, 255"
           className="absolute inset-0 !h-full opacity-70"
+          interactive={false}
+          blendingValue="hard-light"
+          size="80%"
         />
       </div>
+      
       <div className="relative z-10 pt-24 pb-16">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="max-w-7xl mx-auto px-4"
-        >
-          <div className="text-center mb-12">
-            <h1 className="text-5xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-primary via-secondary to-primary">
-              Sweet Events & Celebrations
-            </h1>
-            <p className="text-xl text-foreground/80 mb-6">
-              Make your next event unforgettable with Sweet & Comfy Boston's signature ice cream experience!
-            </p>
-            <p className="text-lg mb-8 max-w-3xl mx-auto text-foreground/70">
-              From intimate gatherings to grand celebrations, we bring the magic of artisanal ice cream to every occasion. 
-              Host your party at our charming Brighton location or let us bring the sweet experience to you!
-            </p>
-            <Button
-              size="lg"
-              variant="default"
-              className="bg-gradient-to-r from-primary via-secondary to-primary hover:opacity-90 text-white font-semibold px-8 py-6 text-lg shadow-lg hover:shadow-xl transition-all duration-300 rounded-full"
-              onClick={() => setIsBookingOpen(true)}
-            >
-              Book Your Sweet Celebration 🎉
-            </Button>
-          </div>
-
-          <div className="bg-background/50 backdrop-blur-sm rounded-xl border border-primary/10 shadow-xl p-6 mb-12">
-            <h2 className="text-2xl font-semibold mb-6 text-foreground">Available Dates</h2>
-            <div className="calendar-wrapper">
-              <style>{`
-                .fc {
-                  --fc-border-color: rgba(var(--primary), 0.1);
-                  --fc-button-bg-color: var(--primary);
-                  --fc-button-border-color: var(--primary);
-                  --fc-button-hover-bg-color: var(--primary-foreground);
-                  --fc-button-hover-border-color: var(--primary-foreground);
-                  --fc-button-active-bg-color: var(--secondary);
-                  --fc-button-active-border-color: var(--secondary);
-                  --fc-today-bg-color: rgba(var(--primary), 0.1);
-                  --fc-neutral-bg-color: var(--background);
-                  --fc-page-bg-color: transparent;
-                  --fc-event-bg-color: var(--primary);
-                  --fc-event-border-color: var(--primary);
-                  --fc-event-text-color: #fff;
-                }
-                .fc-theme-standard td, .fc-theme-standard th {
-                  border-color: var(--border);
-                }
-                .fc-day-today {
-                  background: rgba(var(--primary), 0.1) !important;
-                }
-                .fc-button {
-                  font-weight: 600 !important;
-                  padding: 0.75rem 1.5rem !important;
-                  border-radius: 9999px !important;
-                }
-                .fc-button-primary:not(:disabled):active,
-                .fc-button-primary:not(:disabled).fc-button-active {
-                  background-color: var(--secondary) !important;
-                  border-color: var(--secondary) !important;
-                }
-                .fc-daygrid-day-number,
-                .fc-col-header-cell-cushion {
-                  color: var(--foreground);
-                  font-weight: 500;
-                  padding: 0.5rem;
-                }
-                .fc-day-past {
-                  opacity: 0.5;
-                  pointer-events: none;
-                }
-                .fc-event {
-                  padding: 0.25rem 0.5rem;
-                  border-radius: 6px;
-                  font-weight: 500;
-                }
-                .fc-day-future:hover {
-                  background: rgba(var(--primary), 0.05);
-                  cursor: pointer;
-                }
-                .fc-toolbar-title {
-                  font-size: 1.5rem !important;
-                  font-weight: 600 !important;
-                  color: var(--foreground);
-                }
-              `}</style>
-              <FullCalendar
-                plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
-                initialView="dayGridMonth"
-                selectable={true}
-                select={handleDateSelect}
-                headerToolbar={{
-                  left: 'prev,next',
-                  center: 'title',
-                  right: 'today'
-                }}
-                validRange={{
-                  start: today
-                }}
-                height="auto"
-                events={events}
-                selectConstraint={{
-                  start: today.toISOString()
-                }}
-                selectOverlap={false}
-                businessHours={{
-                  daysOfWeek: [0, 1, 2, 3, 4, 5, 6],
-                  startTime: '10:00',
-                  endTime: '20:00',
-                }}
-                selectMirror={true}
-                dayMaxEvents={3}
-                eventDisplay="block"
-                eventTimeFormat={{
-                  hour: 'numeric',
-                  minute: '2-digit',
-                  meridiem: 'short'
-                }}
-              />
+        <BrandContainer className="max-w-7xl mx-auto px-4">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            className="space-y-8"
+          >
+            <div className="text-center space-y-4">
+              <BrandHeading level={1}>Event Calendar</BrandHeading>
+              <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+                Select a date on the calendar to book your event, or click the button below to start planning your special occasion.
+              </p>
+              <Button
+                onClick={() => setIsBookingOpen(true)}
+                className="bg-gradient-to-r from-brand-pink to-brand-blue hover:opacity-90 text-white px-8 py-6 text-lg font-semibold rounded-xl transition-all duration-200 transform hover:scale-105"
+                size="lg"
+              >
+                Book an Event
+              </Button>
             </div>
-          </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
-            {[
-              {
-                title: "Sweet Celebrations",
-                description: "Host your event at our charming Brighton location. Perfect for birthdays, graduations, and special moments worth celebrating.",
-                icon: "🎉"
-              },
-              {
-                title: "Mobile Ice Cream Bar",
-                description: "We bring the sweet experience to you! Choose from drop-off service or fully staffed events for a worry-free celebration.",
-                icon: "🚚"
-              },
-              {
-                title: "Corporate & Special Events",
-                description: "Elevate your corporate events, weddings, or festivals with our premium ice cream experience.",
-                icon: "✨"
-              }
-            ].map((item, index) => (
-              <motion.div
-                key={index}
-                whileHover={{ scale: 1.02, translateY: -5 }}
-                className="bg-background/50 backdrop-blur-sm rounded-xl border border-primary/10 p-6 shadow-lg"
-              >
-                <div className="text-4xl mb-4">{item.icon}</div>
-                <h3 className="text-xl font-semibold mb-3 text-foreground">{item.title}</h3>
-                <p className="text-foreground/70">{item.description}</p>
-              </motion.div>
-            ))}
-          </div>
+            <div className="rounded-2xl overflow-hidden border border-white/10 shadow-xl">
+              <div className="calendar-container bg-black/40 backdrop-blur-sm p-6">
+                <FullCalendar
+                  plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
+                  initialView="dayGridMonth"
+                  headerToolbar={{
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'dayGridMonth,timeGridWeek'
+                  }}
+                  events={events}
+                  selectable={true}
+                  selectMirror={true}
+                  dayMaxEvents={true}
+                  select={handleDateSelect}
+                  eventClick={handleEventClick}
+                  viewDidMount={handleViewChange}
+                  height="auto"
+                  eventTimeFormat={{
+                    hour: 'numeric',
+                    minute: '2-digit',
+                    meridiem: 'short'
+                  }}
+                  slotMinTime="09:00:00"
+                  slotMaxTime="22:00:00"
+                  allDaySlot={false}
+                  slotDuration="01:00:00"
+                  expandRows={true}
+                  stickyHeaderDates={true}
+                  nowIndicator={true}
+                  weekends={true}
+                  businessHours={{
+                    daysOfWeek: [0, 1, 2, 3, 4, 5, 6],
+                    startTime: '09:00',
+                    endTime: '22:00',
+                  }}
+                  selectConstraint="businessHours"
+                  className={cn(
+                    'custom-calendar rounded-xl overflow-hidden',
+                    'fc-theme-custom',
+                    selectedView === 'timeGridWeek' && 'week-view'
+                  )}
+                />
+              </div>
+            </div>
 
-          <div className="text-center">
-            <p className="text-lg mb-4 text-foreground/80">
-              Ready to plan your sweet celebration? Contact us at{' '}
-              <a
-                href="mailto:info@sweetandcomfyboston.com"
-                className="text-primary hover:underline font-semibold"
-              >
-                info@sweetandcomfyboston.com
-              </a>
-            </p>
-          </div>
-        </motion.div>
+            <div className="text-center space-y-4">
+              <h3 className="text-xl font-semibold text-white">Available Time Slots</h3>
+              <p className="text-muted-foreground">
+                We're open daily from 9 AM to 10 PM. Select your preferred date and time on the calendar above.
+              </p>
+              <div className="flex justify-center gap-4 flex-wrap">
+                <div className="bg-brand-pink/20 px-4 py-2 rounded-lg border border-brand-pink/30 text-brand-pink">
+                  <span className="mr-2">●</span>
+                  Birthday Celebrations
+                </div>
+                <div className="bg-brand-blue/20 px-4 py-2 rounded-lg border border-brand-blue/30 text-brand-blue">
+                  <span className="mr-2">●</span>
+                  Corporate Events
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        </BrandContainer>
       </div>
 
       <Dialog open={isBookingOpen} onOpenChange={setIsBookingOpen}>
-        <DialogContent className="sm:max-w-[500px] bg-background">
+        <DialogContent className="max-w-4xl bg-black/90 backdrop-blur-sm border-white/10">
           <DialogHeader>
-            <DialogTitle className="text-2xl font-bold text-foreground">Book Your Sweet Celebration</DialogTitle>
-            <DialogDescription className="text-foreground/70">
-              Tell us about your dream event, and we'll help make it unforgettably sweet!
+            <DialogTitle className="text-2xl font-bold text-white text-center">
+              Book Your Event
+              {selectedDate && (
+                <span className="block text-lg font-normal text-muted-foreground mt-1">
+                  {selectedDate.toLocaleDateString('en-US', {
+                    weekday: 'long',
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                  })}
+                </span>
+              )}
+            </DialogTitle>
+            <DialogDescription className="text-center text-muted-foreground">
+              Fill out the form below to request your event booking.
             </DialogDescription>
           </DialogHeader>
           <EventBookingForm
-            selectedDate={selectedDate}
-            onSubmit={handleBookingSubmit}
+            initialDate={selectedDate}
+            onClose={() => setIsBookingOpen(false)}
           />
         </DialogContent>
       </Dialog>
+
+      <style jsx global>{`
+        .fc {
+          --fc-border-color: rgba(255, 255, 255, 0.1);
+          --fc-button-bg-color: rgba(255, 255, 255, 0.1);
+          --fc-button-border-color: rgba(255, 255, 255, 0.2);
+          --fc-button-hover-bg-color: rgba(255, 255, 255, 0.2);
+          --fc-button-hover-border-color: rgba(255, 255, 255, 0.3);
+          --fc-button-active-bg-color: rgba(255, 255, 255, 0.3);
+          --fc-button-active-border-color: rgba(255, 255, 255, 0.4);
+          --fc-event-bg-color: rgb(244, 114, 182);
+          --fc-event-border-color: rgb(244, 114, 182);
+          --fc-event-text-color: #fff;
+          --fc-page-bg-color: transparent;
+        }
+
+        .fc .fc-button {
+          font-size: 0.875rem;
+          padding: 0.5rem 1rem;
+          font-weight: 500;
+          border-radius: 0.5rem;
+          text-transform: capitalize;
+        }
+
+        .fc .fc-button-primary:not(:disabled).fc-button-active,
+        .fc .fc-button-primary:not(:disabled):active {
+          background: rgba(255, 255, 255, 0.2);
+          border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .fc .fc-toolbar-title {
+          font-size: 1.25rem;
+          font-weight: 600;
+          color: rgba(255, 255, 255, 0.9);
+        }
+
+        .fc .fc-daygrid-day-number,
+        .fc .fc-col-header-cell-cushion {
+          color: rgba(255, 255, 255, 0.9);
+          text-decoration: none;
+        }
+
+        .fc .fc-day-today {
+          background: rgba(255, 255, 255, 0.1);
+        }
+
+        .fc .fc-highlight {
+          background: rgba(255, 255, 255, 0.1);
+        }
+
+        .fc-theme-custom .fc-list-event:hover td {
+          background: rgba(255, 255, 255, 0.1);
+        }
+
+        .fc-theme-custom .fc-timegrid-slot {
+          height: 3rem;
+        }
+
+        .week-view .fc-timegrid-slot {
+          border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        @media (max-width: 768px) {
+          .fc .fc-toolbar {
+            flex-direction: column;
+            gap: 1rem;
+          }
+
+          .fc .fc-toolbar-title {
+            font-size: 1.125rem;
+          }
+
+          .fc .fc-button {
+            font-size: 0.75rem;
+            padding: 0.375rem 0.75rem;
+          }
+        }
+      `}</style>
     </div>
   );
 };

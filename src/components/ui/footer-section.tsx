@@ -1,12 +1,12 @@
 "use client"
 
 import * as React from "react"
-import { Facebook, Instagram, Twitter } from "lucide-react"
-import { Link } from "react-router-dom"
+import { Facebook, Instagram, Linkedin, Send, Twitter } from "lucide-react"
 import { cn } from "@/lib/utils"
-import { Button } from "../ui/button"
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../ui/tooltip"
-import { Particles } from "../ui/particles"
+import { Button } from "./button"
+import { Input } from "./input"
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "./tooltip"
+import { Particles } from "./particles"
 
 export const Footer = () => {
   return (
@@ -26,10 +26,10 @@ export const Footer = () => {
             <p className="text-secondary-light">6 Tremont St</p>
             <p className="text-secondary-light">Brighton, MA</p>
             <a 
-              href="tel:+16179999999" 
+              href="tel:+1234567890" 
               className="text-secondary-light hover:text-primary transition-colors"
             >
-              (617) 999-9999
+              (123) 456-7890
             </a>
           </div>
 
@@ -48,20 +48,14 @@ export const Footer = () => {
               <TooltipProvider>
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <a 
-                      href="https://instagram.com/sweetandcomfyboston" 
-                      target="_blank" 
-                      rel="noopener noreferrer"
+                    <Button 
+                      variant="outline" 
+                      size="icon" 
+                      className="rounded-full border-primary/20 bg-background hover:bg-primary/10 hover:text-primary"
                     >
-                      <Button 
-                        variant="outline" 
-                        size="icon" 
-                        className="rounded-full border-primary/20 bg-background hover:bg-primary/10 hover:text-primary"
-                      >
-                        <Instagram className="h-4 w-4" />
-                        <span className="sr-only">Instagram</span>
-                      </Button>
-                    </a>
+                      <Instagram className="h-4 w-4" />
+                      <span className="sr-only">Instagram</span>
+                    </Button>
                   </TooltipTrigger>
                   <TooltipContent>
                     <p>Follow us on Instagram</p>
@@ -71,20 +65,14 @@ export const Footer = () => {
               <TooltipProvider>
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <a 
-                      href="https://facebook.com/sweetandcomfyboston" 
-                      target="_blank" 
-                      rel="noopener noreferrer"
+                    <Button 
+                      variant="outline" 
+                      size="icon" 
+                      className="rounded-full border-primary/20 bg-background hover:bg-primary/10 hover:text-primary"
                     >
-                      <Button 
-                        variant="outline" 
-                        size="icon" 
-                        className="rounded-full border-primary/20 bg-background hover:bg-primary/10 hover:text-primary"
-                      >
-                        <Facebook className="h-4 w-4" />
-                        <span className="sr-only">Facebook</span>
-                      </Button>
-                    </a>
+                      <Facebook className="h-4 w-4" />
+                      <span className="sr-only">Facebook</span>
+                    </Button>
                   </TooltipTrigger>
                   <TooltipContent>
                     <p>Follow us on Facebook</p>
@@ -94,20 +82,14 @@ export const Footer = () => {
               <TooltipProvider>
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <a 
-                      href="https://twitter.com/sweetandcomfyma" 
-                      target="_blank" 
-                      rel="noopener noreferrer"
+                    <Button 
+                      variant="outline" 
+                      size="icon" 
+                      className="rounded-full border-primary/20 bg-background hover:bg-primary/10 hover:text-primary"
                     >
-                      <Button 
-                        variant="outline" 
-                        size="icon" 
-                        className="rounded-full border-primary/20 bg-background hover:bg-primary/10 hover:text-primary"
-                      >
-                        <Twitter className="h-4 w-4" />
-                        <span className="sr-only">Twitter</span>
-                      </Button>
-                    </a>
+                      <Twitter className="h-4 w-4" />
+                      <span className="sr-only">Twitter</span>
+                    </Button>
                   </TooltipTrigger>
                   <TooltipContent>
                     <p>Follow us on Twitter</p>
@@ -119,18 +101,18 @@ export const Footer = () => {
         </div>
         <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-primary/10 pt-8 text-center md:flex-row">
           <p className="text-sm text-secondary-light">
-            &copy; {new Date().getFullYear()} Sweet & Comfy Boston. All rights reserved.
+            2024 Sweet & Comfy Boston. All rights reserved.
           </p>
           <nav className="flex gap-4 text-sm text-secondary-light">
-            <Link to="/privacy-policy" className="transition-colors hover:text-primary">
+            <a href="#" className="transition-colors hover:text-primary">
               Privacy Policy
-            </Link>
-            <Link to="/terms-of-service" className="transition-colors hover:text-primary">
+            </a>
+            <a href="#" className="transition-colors hover:text-primary">
               Terms of Service
-            </Link>
-            <Link to="/cookie-settings" className="transition-colors hover:text-primary">
+            </a>
+            <a href="#" className="transition-colors hover:text-primary">
               Cookie Settings
-            </Link>
+            </a>
           </nav>
         </div>
       </div>
