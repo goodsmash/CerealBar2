@@ -5,7 +5,6 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { Layout } from "@/components/layout/Layout";
 import Index from "./pages/Index";
 import { FlavorFinder } from "./pages/FlavorFinder";
-import Catering from "./pages/Catering";
 import Events from "./pages/Events";
 import { PrivacyPolicy } from "./pages/policies/PrivacyPolicy";
 import { TermsOfService } from "./pages/policies/TermsOfService";
@@ -50,7 +49,6 @@ const App = () => (
           <Route element={<Layout />}>
             <Route path="/" element={<Index />} />
             <Route path="/flavor-finder" element={<FlavorFinder />} />
-            <Route path="/catering" element={<Catering />} />
             <Route path="/events" element={<Events />} />
             <Route path="/privacy-policy" element={<PrivacyPolicy />} />
             <Route path="/terms-of-service" element={<TermsOfService />} />

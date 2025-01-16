@@ -1,16 +1,17 @@
-/* Map container animations */
+/* Map container */
 .mapContainer {
-  @apply relative w-full h-full overflow-hidden rounded-xl;
-  transition: transform 0.3s ease-in-out;
+  @apply relative w-full h-[500px] overflow-hidden rounded-2xl shadow-lg;
+  transition: all 0.3s ease-in-out;
 }
 
 .mapContainer:hover {
-  transform: scale(1.01);
+  @apply shadow-xl;
+  transform: translateY(-2px);
 }
 
 /* Loading animation */
 .loadingSpinner {
-  @apply w-8 h-8 border-4 border-brand-pink border-t-transparent rounded-full;
+  @apply w-12 h-12 border-4 border-brand-pink border-t-transparent rounded-full;
   animation: spin 1s linear infinite;
 }
 
@@ -21,11 +22,11 @@
 
 /* Error state */
 .errorContainer {
-  @apply flex items-center justify-center w-full h-full bg-pink-50/90 backdrop-blur-sm rounded-xl p-4;
+  @apply flex flex-col items-center justify-center w-full h-full bg-pink-50/90 backdrop-blur-sm rounded-2xl p-8;
 }
 
 .errorIcon {
-  @apply w-12 h-12 text-brand-pink;
+  @apply w-16 h-16 text-brand-pink mb-4;
   animation: bounce 2s ease-in-out infinite;
 }
 
@@ -36,26 +37,39 @@
 
 /* Map controls */
 .mapControls {
-  @apply absolute bottom-4 right-4 flex flex-col gap-2;
-  z-index: 1;
+  @apply absolute bottom-6 right-6 flex flex-col gap-3 z-10;
 }
 
 .mapButton {
-  @apply p-2 bg-white rounded-lg shadow-lg hover:bg-gray-50 transition-colors;
+  @apply p-3 bg-white/90 backdrop-blur rounded-xl shadow-lg hover:bg-white hover:shadow-xl transition-all duration-200;
   border: 1px solid rgba(236, 72, 153, 0.2);
 }
 
+.mapButton:hover {
+  transform: translateY(-1px);
+}
+
+.mapButton:active {
+  transform: translateY(0);
+}
+
 /* Responsive design */
+@media (max-width: 1024px) {
+  .mapContainer {
+    @apply h-[400px];
+  }
+}
+
 @media (max-width: 640px) {
   .mapContainer {
     @apply h-[300px];
   }
   
   .mapControls {
-    @apply bottom-2 right-2 gap-1;
+    @apply bottom-4 right-4 gap-2;
   }
   
   .mapButton {
-    @apply p-1;
+    @apply p-2;
   }
 }

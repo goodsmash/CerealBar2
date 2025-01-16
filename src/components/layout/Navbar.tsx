@@ -13,8 +13,7 @@ export const Navbar = () => {
   const navItems = [
     { path: "/", label: "Menu" },
     { path: "/flavor-finder", label: "Flavor Finder" },
-    { path: "/catering", label: "Catering" },
-    { path: "/events", label: "Events" },
+    { path: "/events", label: "Events & Catering" },
   ];
 
   return (

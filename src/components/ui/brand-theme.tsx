@@ -1,141 +1,137 @@
 import { cn } from "@/lib/utils";
-
-interface BrandGradientTextProps {
-  children: React.ReactNode;
-  className?: string;
-}
-
-export const BrandGradientText = ({
-  children,
-  className,
-}: BrandGradientTextProps) => {
-  return (
-    <span
-      className={cn(
-        "bg-gradient-to-r from-brand-pink to-brand-blue bg-clip-text text-transparent",
-        className
-      )}
-    >
-      {children}
-    </span>
-  );
-};
+import { motion } from "framer-motion";
+import { ReactNode } from "react";
 
 interface BrandContainerProps {
-  children: React.ReactNode;
+  children: ReactNode;
   className?: string;
 }
-
-export const BrandContainer = ({
-  children,
-  className,
-}: BrandContainerProps) => {
-  return (
-    <div
-      className={cn(
-        "relative overflow-hidden rounded-lg border border-brand-pink/10 bg-background/95 p-6 shadow-lg backdrop-blur supports-[backdrop-filter]:bg-background/60",
-        className
-      )}
-    >
-      {children}
-      <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-brand-pink/0 via-brand-pink/50 to-brand-pink/0" />
-        <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-brand-blue/0 via-brand-blue/50 to-brand-blue/0" />
-        <div className="absolute inset-y-0 left-0 w-px bg-gradient-to-b from-brand-pink/0 via-brand-pink/50 to-brand-blue/50" />
-        <div className="absolute inset-y-0 right-0 w-px bg-gradient-to-b from-brand-pink/0 via-brand-pink/50 to-brand-blue/50" />
-      </div>
-    </div>
-  );
-};
-
-interface BrandButtonProps {
-  children: React.ReactNode;
-  className?: string;
-  variant?: "default" | "outline" | "ghost";
-}
-
-export const BrandButton = ({
-  children,
-  className,
-  variant = "default",
-}: BrandButtonProps) => {
-  const baseStyles = "inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none ring-offset-background";
-  
-  const variants = {
-    default: "bg-gradient-to-r from-brand-pink to-brand-blue text-white hover:from-brand-pink/90 hover:to-brand-blue/90 shadow-lg",
-    outline: "border border-brand-pink/50 hover:border-brand-pink bg-background hover:bg-accent/10",
-    ghost: "hover:bg-accent/10 hover:text-accent-foreground",
-  };
-
-  return (
-    <button
-      className={cn(
-        baseStyles,
-        variants[variant],
-        className
-      )}
-    >
-      {children}
-    </button>
-  );
-};
-
-interface BrandCardProps {
-  children: React.ReactNode;
-  className?: string;
-  hoverable?: boolean;
-}
-
-export const BrandCard = ({
-  children,
-  className,
-  hoverable = false,
-}: BrandCardProps) => {
-  return (
-    <div
-      className={cn(
-        "rounded-lg border border-brand-pink/10 bg-card p-6",
-        hoverable && "transition-all duration-200 hover:shadow-lg hover:border-brand-pink/30 hover:scale-[1.02]",
-        className
-      )}
-    >
-      {children}
-    </div>
-  );
-};
 
 interface BrandHeadingProps {
-  children: React.ReactNode;
-  className?: string;
   level?: 1 | 2 | 3 | 4 | 5 | 6;
+  children: ReactNode;
+  className?: string;
+  gradient?: boolean;
 }
 
-export const BrandHeading = ({
-  children,
-  className,
-  level = 2,
-}: BrandHeadingProps) => {
-  const Component = `h${level}` as keyof JSX.IntrinsicElements;
-  
-  const baseStyles = "font-bold bg-gradient-to-r from-brand-pink to-brand-blue bg-clip-text text-transparent";
-  const sizeStyles = {
-    1: "text-4xl md:text-5xl lg:text-6xl",
-    2: "text-3xl md:text-4xl lg:text-5xl",
-    3: "text-2xl md:text-3xl lg:text-4xl",
-    4: "text-xl md:text-2xl lg:text-3xl",
-    5: "text-lg md:text-xl lg:text-2xl",
-    6: "text-base md:text-lg lg:text-xl",
-  };
+interface BrandButtonProps {
+  variant?: "primary" | "secondary" | "outline";
+  size?: "sm" | "md" | "lg";
+  children: ReactNode;
+  className?: string;
+  onClick?: () => void;
+}
 
+interface BrandCardProps {
+  children: ReactNode;
+  className?: string;
+  hover?: boolean;
+  gradient?: boolean;
+}
+
+export const BrandContainer = ({ children, className }: BrandContainerProps) => {
   return (
-    <Component
+    <div className={cn("container mx-auto px-4 sm:px-6 lg:px-8", className)}>
+      {children}
+    </div>
+  );
+};
+
+export const BrandHeading = ({ 
+  level = 2, 
+  children, 
+  className,
+  gradient = true 
+}: BrandHeadingProps) => {
+  const Tag = `h${level}` as keyof JSX.IntrinsicElements;
+  return (
+    <Tag 
       className={cn(
-        baseStyles,
-        sizeStyles[level],
+        "font-bold",
+        {
+          "text-6xl md:text-7xl": level === 1,
+          "text-5xl md:text-6xl": level === 2,
+          "text-4xl md:text-5xl": level === 3,
+          "text-3xl md:text-4xl": level === 4,
+          "text-2xl md:text-3xl": level === 5,
+          "text-xl md:text-2xl": level === 6,
+        },
+        gradient && "bg-clip-text text-transparent bg-gradient-to-r from-brand-pink-light via-white to-brand-blue-light",
         className
       )}
     >
       {children}
-    </Component>
+    </Tag>
+  );
+};
+
+export const BrandButton = ({ 
+  variant = "primary", 
+  size = "md", 
+  children, 
+  className,
+  onClick 
+}: BrandButtonProps) => {
+  const baseStyles = "rounded-full font-semibold transition-all duration-300 shadow-lg hover:shadow-xl";
+  const sizeStyles = {
+    sm: "px-4 py-2 text-sm",
+    md: "px-6 py-3 text-base",
+    lg: "px-8 py-4 text-lg",
+  };
+  const variantStyles = {
+    primary: "bg-brand-pink hover:bg-brand-pink-dark text-white",
+    secondary: "bg-brand-blue hover:bg-brand-blue-dark text-white",
+    outline: "border-2 border-white/20 hover:border-brand-pink-light/50 text-white hover:bg-white/10 backdrop-blur-sm",
+  };
+
+  return (
+    <motion.button
+      whileHover={{ scale: 1.02 }}
+      whileTap={{ scale: 0.98 }}
+      className={cn(
+        baseStyles,
+        sizeStyles[size],
+        variantStyles[variant],
+        className
+      )}
+      onClick={onClick}
+    >
+      {children}
+    </motion.button>
+  );
+};
+
+export const BrandCard = ({ 
+  children, 
+  className,
+  hover = true,
+  gradient = true
+}: BrandCardProps) => {
+  return (
+    <motion.div
+      whileHover={hover ? { y: -5 } : undefined}
+      className={cn(
+        "relative rounded-2xl overflow-hidden",
+        className
+      )}
+    >
+      {gradient && (
+        <div className="absolute inset-0 bg-gradient-to-r from-brand-pink-lighter/20 to-brand-blue-lighter/20 blur-xl transition-all duration-300 group-hover:scale-105" />
+      )}
+      <div className="relative bg-white/5 backdrop-blur-sm p-8 rounded-2xl border border-white/10 transition-all duration-300 group-hover:border-brand-pink-light/50">
+        {children}
+      </div>
+    </motion.div>
+  );
+};
+
+export const BrandGradientText = ({ children, className }: { children: ReactNode; className?: string }) => {
+  return (
+    <span className={cn(
+      "bg-clip-text text-transparent bg-gradient-to-r from-brand-pink-light via-white to-brand-blue-light",
+      className
+    )}>
+      {children}
+    </span>
   );
 };

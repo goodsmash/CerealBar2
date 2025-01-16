@@ -1,87 +1,101 @@
 import { motion } from 'framer-motion';
+import { Star, Quote } from 'lucide-react';
+import { BrandContainer, BrandHeading } from '@/components/ui/brand-theme';
 
 const reviews = [
   {
     id: 1,
-    author: "Erica S.",
+    name: "Sarah M.",
     rating: 5,
-    text: "The ambiance of the establishment was exceptionally impressive, exuding a welcoming and positive atmosphere. My children thoroughly enjoyed their experience, even during the brief wait for their milkshakes. The employees displayed a remarkable level of enthusiasm and positivity.",
-    isLocalGuide: true,
-    reviewCount: "8 reviews"
+    text: "Best ice cream experience ever! The cereal combinations are genius. My kids absolutely love this place!",
+    date: "2 weeks ago"
   },
   {
     id: 2,
-    author: "Alyssa",
+    name: "Michael R.",
     rating: 5,
-    text: "Great new addition to Oak Square! The employees are very attentive and friendly. Decor inside is super cool. Love the vibe overall. Cereal treats are sweet!",
-    reviewCount: "6 reviews"
+    text: "Amazing flavors and great atmosphere. The staff is super friendly and always ready with great recommendations.",
+    date: "1 month ago"
   },
   {
     id: 3,
-    author: "Cyndi Rosenblatt",
+    name: "Emily K.",
     rating: 5,
-    text: "Fantastic place! Cereal sundaes and shakes are out of this world! They came up with some great flavor combinations of your fave cereals or you can make your own. Such a great idea in a really cute place. Totally hits the mark! A++",
-    reviewCount: "4 reviews"
-  },
-  {
-    id: 4,
-    author: "ThisisCourt_TV",
-    rating: 5,
-    text: "What an amazing dessert shop!! Never been to a cereal bar, so glad I got to stop on for the grand opening, and I was NOT disappointed! Great music, great people and my Mucha Lucha shake was out of this world! Finished it off with some waffle fries and was beyond satisfied!",
-    reviewCount: "10 reviews"
-  },
-  {
-    id: 5,
-    author: "Michaela Youngberg",
-    rating: 5,
-    text: "Extremely happy that I stopped into this place, I had been meaning to go and I was not disappointed! The staff were so friendly and helpful, it was my first time so the gentleman at the counter helped me navigate the menu. Would highly recommend if you're looking for a sweet, nostalgic treat!",
-    reviewCount: "17 reviews"
+    text: "Such a unique concept! The nostalgic cereal flavors mixed with premium ice cream is pure genius. A must-try!",
+    date: "3 weeks ago"
   }
 ];
 
 export const ReviewsSection = () => {
   return (
-    <section className="py-16 bg-accent/5">
-      <div className="max-w-7xl mx-auto px-4">
+    <motion.section
+      initial={{ opacity: 0 }}
+      whileInView={{ opacity: 1 }}
+      viewport={{ once: true }}
+      className="relative py-24 overflow-hidden"
+    >
+      {/* Animated background elements */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <motion.div
+          animate={{
+            scale: [1, 1.2, 1],
+            rotate: [0, -10, 10, 0],
+          }}
+          transition={{
+            duration: 20,
+            repeat: Infinity,
+            ease: "linear"
+          }}
+          className="absolute -top-1/2 -right-1/2 w-full h-full bg-gradient-to-bl from-brand-blue/20 to-transparent rounded-full blur-3xl"
+        />
+      </div>
+
+      <BrandContainer>
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-center mb-12"
+          className="text-center mb-16 space-y-4"
         >
-          <h2 className="text-3xl font-bold text-primary mb-2">What Our Customers Say</h2>
-          <div className="flex justify-center items-center gap-1 mb-2">
-            {[...Array(5)].map((_, i) => (
-              <span key={i} className="text-yellow-400">★</span>
-            ))}
-          </div>
-          <p className="text-secondary">5.0 rating based on 119 Google reviews</p>
+          <BrandHeading level={2}>What Our Customers Say</BrandHeading>
+          <p className="text-xl text-gray-200 max-w-2xl mx-auto">
+            Don't just take our word for it - hear from our amazing customers!
+          </p>
         </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {reviews.map((review, index) => (
             <motion.div
               key={review.id}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ delay: index * 0.2 }}
-              className="bg-background p-6 rounded-lg shadow-lg"
+              transition={{ delay: index * 0.1 }}
+              whileHover={{ y: -5 }}
+              className="relative group"
             >
-              <div className="flex items-start justify-between mb-4">
-                <div>
-                  <h3 className="font-semibold text-primary">{review.author}</h3>
-                  <p className="text-sm text-secondary">
-                    {review.isLocalGuide ? "Local Guide • " : ""}{review.reviewCount}
-                  </p>
+              <div className="absolute inset-0 bg-gradient-to-r from-brand-pink/20 to-brand-blue/20 rounded-2xl blur-xl transition-all duration-300 group-hover:scale-105" />
+              <div className="relative bg-white/5 backdrop-blur-sm p-8 rounded-2xl border border-white/10 h-full transition-all duration-300 group-hover:border-brand-pink/50">
+                <div className="flex justify-between items-start mb-6">
+                  <div className="flex space-x-1">
+                    {[...Array(review.rating)].map((_, i) => (
+                      <Star
+                        key={i}
+                        className="w-5 h-5 text-yellow-400 fill-current"
+                      />
+                    ))}
+                  </div>
+                  <Quote className="w-8 h-8 text-brand-pink opacity-50" />
                 </div>
-                <div className="flex">
-                  {[...Array(review.rating)].map((_, i) => (
-                    <span key={i} className="text-yellow-400">★</span>
-                  ))}
+                <p className="text-gray-200 mb-6 leading-relaxed">{review.text}</p>
+                <div className="flex justify-between items-center">
+                  <div>
+                    <p className="font-semibold text-white">{review.name}</p>
+                    <p className="text-sm text-gray-400">{review.date}</p>
+                  </div>
+                  <div className="w-2 h-2 rounded-full bg-brand-pink/50" />
                 </div>
               </div>
-              <p className="text-secondary text-sm line-clamp-4">{review.text}</p>
             </motion.div>
           ))}
         </div>
@@ -90,19 +104,19 @@ export const ReviewsSection = () => {
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-center mt-12"
+          className="mt-16 text-center"
         >
           <a
-            href="https://www.google.com/maps/place/Day+%26+Night+Cereal+Bar:+Boston/@42.3485,-71.1535,15z/data=!4m6!3m5!1s0x89e379a606c9e879:0x4395e689feb76639!8m2!3d42.3485!4d-71.1535!16s%2Fg%2F11t82_8tn1?entry=ttu"
+            href="https://g.page/r/your-google-review-link"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center text-primary hover:text-primary/80 transition-colors"
+            className="inline-flex items-center px-8 py-4 bg-white/5 hover:bg-white/10 text-white rounded-full backdrop-blur-sm border border-white/10 hover:border-brand-pink/50 transition-all duration-300"
           >
-            <span className="mr-2">See all reviews on Google</span>
-            <span className="text-lg">→</span>
+            <Star className="w-5 h-5 mr-2 text-yellow-400" />
+            Leave a Review
           </a>
         </motion.div>
-      </div>
-    </section>
+      </BrandContainer>
+    </motion.section>
   );
 };
